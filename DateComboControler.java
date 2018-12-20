@@ -3,7 +3,7 @@ import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 
 /**
- * This Class is a Listener to detect events and initialise date items of the drop down boxes.
+ * This Class is an ItemListener to detect events and initialise date items of the drop down boxes.
  * @author Sheng Liang
  */
 public class DateComboControler implements ItemListener{
@@ -21,6 +21,10 @@ public class DateComboControler implements ItemListener{
         this.Month = Month;
         this.Day = Day;
         this.Year = Year;
+    }
+
+    {
+        AddItems();
     }
 
     /**
@@ -63,7 +67,7 @@ public class DateComboControler implements ItemListener{
             int year = Integer.valueOf(objYear.toString());
             int month = Integer.valueOf(objYear.toString());
 
-            if (month == 2 && (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) { // leap year
+            if (month == 2 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) { // Not leap year
                 Month.removeItemAt(30);
             }//if
         }//if
