@@ -1,11 +1,8 @@
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -41,16 +38,21 @@ public class MarketGUI {
                         String choStock = objStock.toString();
                         String choStartDate = objSM.toString() + "/" + objSD.toString() + "/" + objSY.toString();
                         String choEndDate = objEM.toString() + "/" + objED.toString() + "/" + objEY.toString();
-                        SimpleDateFormat sdf = new SimpleDateFormat( " MM/dd/yyyy" );
-                        String today = sdf.format(new Date());
-                        if (choStartDate > ){
-
+                        SimpleDateFormat sdf = new SimpleDateFormat(" MM/dd/yyyy");
+                        Date Today = new Date();
+                        /*
+                        if (choEndDate > Today){ //Error1
+                            System.out.println("End Date Error: later than today.");
                         }
-                        else{
-                            System.out.println("Please select stock, start date and end date.");
+                        else if (choStartDate > choEndDate){ // Error2
+                            System.out.println("Start Date Error: later than End Date.");
                         }
-                    }
-                    else{
+                        else{ //OK
+                            DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
+                            ArrayList<Object> Stock = dr.getStock();
+                            System.out.println(Stock);
+                        }*/
+                    } else { //Error3
                         System.out.println("Please select stock, start date and end date.");
                     }
                 }
@@ -83,6 +85,7 @@ public class MarketGUI {
     private void $$$setupUI$$$() {
         MainPanel = new JPanel();
         MainPanel.setLayout(new BorderLayout(0, 0));
+        MainPanel.setForeground(new Color(-12828863));
         NorthPanel = new JPanel();
         NorthPanel.setLayout(new GridBagLayout());
         MainPanel.add(NorthPanel, BorderLayout.NORTH);
@@ -106,6 +109,7 @@ public class MarketGUI {
         SouthPanel.add(label2, gbc);
         CenterPanel = new JPanel();
         CenterPanel.setLayout(new GridBagLayout());
+        CenterPanel.setForeground(new Color(-12828863));
         MainPanel.add(CenterPanel, BorderLayout.CENTER);
         StockCombo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -135,6 +139,7 @@ public class MarketGUI {
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 0, 0, 0);
         CenterPanel.add(StartDayCombo, gbc);
         StartYearCombo = new JComboBox();
         gbc = new GridBagConstraints();
@@ -142,6 +147,7 @@ public class MarketGUI {
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 0, 0, 0);
         CenterPanel.add(StartYearCombo, gbc);
         EndMonthCombo = new JComboBox();
         gbc = new GridBagConstraints();

@@ -5,14 +5,31 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * This Class retrieves stock data by URL and store them into an ArrayList.
+ * @author Sheng Liang
+ */
 public class DataRetriever {
-
-    public DataRetriever(String ticker_symbol, String startDate, String endDate) {
-        this.URL = "https://quotes.wsj.com/" + ticker_symbol + "/historical-prices/download?MOD_VIEW=page&num_rows=300&startDate=" + startDate + "&endDate=" + endDate;
-    }
 
     private static String URL;
 
+    /**
+     * Constructor, input the three params of a stock to get its full URL.
+     * @param ticker_symbol
+     * @param startDate
+     * @param endDate
+     */
+    public DataRetriever(String ticker_symbol, String startDate, String endDate) {
+        this.URL = "https://quotes.wsj.com/" + ticker_symbol
+                + "/historical-prices/download?MOD_VIEW=page&num_rows=300&startDate="
+                + startDate + "&endDate=" + endDate;
+    }
+
+    /**
+     * This method retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
+     * @return ArrayList<Object> of the stock data.
+     * @exception IOException On input error.
+     */
     public ArrayList<Object> getStock() throws IOException {
         ArrayList<Object> Stock = new ArrayList<>();
         URL obj = new URL(this.URL);
@@ -20,7 +37,6 @@ public class DataRetriever {
         connection.setRequestMethod("GET");
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) { // success
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String eachLine = reader.readLine();
             while (eachLine != null) {
@@ -35,6 +51,7 @@ public class DataRetriever {
         }
         return Stock;
     }
+
     /*
     public static void main(String[] args) throws IOException {
         DataRetriever dr=new DataRetriever("AAPL", "01/01/2018", "12/31/2018");

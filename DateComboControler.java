@@ -2,13 +2,16 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 
+/**
+ * This Class is a Listener to detect events and initialise date items of the drop down boxes.
+ * @author Sheng Liang
+ */
 public class DateComboControler implements ItemListener{
-    private JComboBox Month;
-    private JComboBox Day;
-    private JComboBox Year;
+
+    private JComboBox Month, Day, Year;
 
     /**
-     *
+     * Constructor, input the three params of three JComboBox.
      * @param Month
      * @param Year
      * @param Day
@@ -21,7 +24,7 @@ public class DateComboControler implements ItemListener{
     }
 
     /**
-     * Initialize the three drop down boxes for month, year and day.
+     * This method initialises the three drop down boxes for month, year and day.
      */
     public void AddItems() {
         // add 12 months
@@ -32,7 +35,6 @@ public class DateComboControler implements ItemListener{
         for (int i = 2016; i <= 2019; i++) {
             Year.addItem("" + i);
         }
-
         // add 31 days
         for (int j = 0; j < 31; j++) {
             Day.addItem("" + (j + 1));
@@ -40,7 +42,7 @@ public class DateComboControler implements ItemListener{
     }
 
     /**
-     * Use Month to control Day elements, and check leap Year.
+     * This method checks special dates and leap year.
      */
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -48,23 +50,21 @@ public class DateComboControler implements ItemListener{
         if (objMonth != null) {
             Day.removeAllItems();
             int month = Integer.valueOf(objMonth.toString());
-            int day31 = 31;
-            int day30 = 30;
             if (month == 4 || month == 6 || month == 9 || month == 11) {
-                Month.removeItem(day31);
+                Month.removeItemAt(32);
             }
             else if (month == 2) {
-                Month.removeItem(day31);
-                Month.removeItem(day30);
+                Month.removeItemAt(32);
+                Month.removeItemAt(31);
             }//if
         }//if
         Object objYear = Year.getSelectedItem();// get selected year
         if (objYear != null) {
             int year = Integer.valueOf(objYear.toString());
             int month = Integer.valueOf(objYear.toString());
-            int days = 29;
+
             if (month == 2 && (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) { // leap year
-                Month.removeItem(days);
+                Month.removeItemAt(30);
             }//if
         }//if
     }
