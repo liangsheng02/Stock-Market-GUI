@@ -35,10 +35,11 @@ public class DataRetriever {
         }
         return Stock;
     }
-
+    /*
     public static void main(String[] args) throws IOException {
         DataRetriever dr=new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
         ArrayList stock = dr.getStock();
         System.out.println(stock);
     }
+    */
 }
