@@ -63,6 +63,7 @@ public class DateComboSetter implements ItemListener{
         if (objMonth != null) {
             Day.removeAllItems();
             int month = Integer.valueOf(objMonth.toString());
+            System.out.println(objMonth.toString());
             if (month == 4 || month == 6 || month == 9 || month == 11) {
                 Month.removeItem(31);
             }

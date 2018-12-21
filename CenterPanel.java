@@ -1,5 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This Class is the CenterPanel (with GridBagLayout) contained in MainPanel of MarketGUI.
@@ -16,41 +21,12 @@ public class CenterPanel extends JPanel {
     private JComboBox StockCombo;
     private JButton GoButton;
     private GridBagConstraints gbc;
+    private int ErrorStatus;
+    private ArrayList<Object> Stock;
+    private MarketGUI gui;
 
-    public JComboBox getStartMonthCombo() {
-        return StartMonthCombo;
-    }
-
-    public JComboBox getStartDayCombo() {
-        return StartDayCombo;
-    }
-
-    public JComboBox getStartYearCombo() {
-        return StartYearCombo;
-    }
-
-    public JComboBox getEndMonthCombo() {
-        return EndMonthCombo;
-    }
-
-    public JComboBox getEndDayCombo() {
-        return EndDayCombo;
-    }
-
-    public JComboBox getEndYearCombo() {
-        return EndYearCombo;
-    }
-
-    public JComboBox getStockCombo() {
-        return StockCombo;
-    }
-
-    public JButton getGoButton() {
-        return GoButton;
-    }
-
-    public GridBagConstraints getGbc() {
-        return gbc;
+    public ArrayList<Object> getStock() {
+        return Stock;
     }
 
     /**
@@ -96,7 +72,8 @@ public class CenterPanel extends JPanel {
     /**
      * Constructor, add components tp the CenterPanel.
      */
-    public CenterPanel() {
+    public CenterPanel(MarketGUI gui) {
+        this.gui = gui;
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(-12828863));
         Font CenterPanelFont = this.getFont(null, -1, -1, this.getFont());
@@ -135,7 +112,7 @@ public class CenterPanel extends JPanel {
         StockCombo = new JComboBox();
         StockCombo.setForeground(new Color(-12828863));
         final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
-        defaultComboBoxModel.addElement("APPL");
+        defaultComboBoxModel.addElement("AAPL");
         defaultComboBoxModel.addElement("FB");
         defaultComboBoxModel.addElement("GOOG");
         defaultComboBoxModel.addElement("YHOO");
@@ -177,7 +154,55 @@ public class CenterPanel extends JPanel {
         GoButton.setText("Go !");
         gbc = setGbc(3, 3, 17, 2, 10, 10 ,0, 10);//anchor: None, fill: HORIZONTAL
         this.add(GoButton, gbc);
+        GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
     }
+
+    /**
+     * Create ActionListener for GoButton, to check whether the dates are legal, and change ErrorStatus.
+     * */
+    private class GoButtonActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+            if (source == GoButton) {
+                Object objStock = StockCombo.getSelectedItem();
+                Object objSM = StartMonthCombo.getSelectedItem();
+                Object objSY = StartYearCombo.getSelectedItem();
+                Object objSD = StartDayCombo.getSelectedItem();
+                Object objEM = EndMonthCombo.getSelectedItem();
+                Object objEY = EndYearCombo.getSelectedItem();
+                Object objED = EndDayCombo.getSelectedItem();
+                if (objStock != null && objSM != null && objSY != null && objSD != null
+                        && objEM != null && objEY != null && objED != null) {
+                    String choStock = objStock.toString();
+                    String choStartDate = objSM.toString() + "/" + objSD.toString() + "/" + objSY.toString();
+                    String choEndDate = objEM.toString() + "/" + objED.toString() + "/" + objEY.toString();
+                    try {
+                        Date start = new SimpleDateFormat("MM/dd/yyyy").parse(choStartDate);
+                        Date end = new SimpleDateFormat("MM/dd/yyyy").parse(choEndDate);
+                        choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);
+                        choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
+                        Date today = new Date();
+                        if (end.after(today)) { //Error1 "End Date Error: later than today."
+                            ErrorStatus = 1;
+                        } else if (start.after(end)) { // Error2 "Start Date Error: later than End Date."
+                            ErrorStatus = 2;
+                        } else { //OK
+                            ErrorStatus = 0;
+                            DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
+                            Stock = dr.getStock();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                    }
+                } else { //Error3 "Please Select Stock, Start Date and End Date."
+                    ErrorStatus = 3;
+                }
+                gui.getMessage(ErrorStatus);
+            }
+        }
+    }
+
 
     /**
      * This method is used to set font.
