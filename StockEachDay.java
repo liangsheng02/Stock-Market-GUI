@@ -1,10 +1,34 @@
 /**
- * This Class is used to store the six stock data of each day.
+ * This Class is used to store the six stock params of each day.
  * @author Sheng Liang
  */
 public class StockEachDay {
 
-    private String Date, Open, High, Low, Close, Volume;
+    private String Date;
+    private String Open;
+    private String High;
+    private String Low;
+    private String Close;
+    private String Volume;
+
+    public String getDate() {
+        return Date;
+    }
+    public double getOpen() {
+        return Double.parseDouble(Open);
+    }
+    public double getHigh() {
+        return Double.parseDouble(High);
+    }
+    public double getLow() {
+        return Double.parseDouble(Low);
+    }
+    public double getClose() {
+        return Double.parseDouble(Close);
+    }
+    public double getVolume() {
+        return Double.parseDouble(Volume);
+    }
 
     /**
      * Constructor, input the six params of a stock each day.
@@ -22,24 +46,5 @@ public class StockEachDay {
         this.Low = Low;
         this.Close = Close;
         this.Volume = Volume;
-    }
-
-    public String getDate() {
-        return Date;
-    }
-    public String getOpen() {
-        return Open;
-    }
-    public String getHigh() {
-        return High;
-    }
-    public String getLow() {
-        return Low;
-    }
-    public String getClose() {
-        return Close;
-    }
-    public String getVolume() {
-        return Volume;
     }
 }

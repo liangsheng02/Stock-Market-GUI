@@ -7,7 +7,7 @@ public class MarketGUI {
     private JPanel NorthPanel;
     private MessagePanel mPanel;
     private CenterPanel cPanel;
-    private ArrayList<Object> Stock;
+    private StockData Stock;
 
     /**
      * This method receives a status, if the status is OK then gets the stock from CenterPanel,
@@ -17,13 +17,13 @@ public class MarketGUI {
     public void getMessage(int status){
         if (status == 0){//OK
             Stock = cPanel.getStock();
-            //System.out.println(Stock);
+            mPanel.setDisplayString("Welcome to MarketGUI !");
         }
         else if(status == 1){//Error1
-            mPanel.setDisplayString("End Date Error: later than today.");
+            mPanel.setDisplayString("End Date Error: Later Than today.");
         }
         else if(status == 2){//Error2
-            mPanel.setDisplayString("Start Date Error: later than End Date.");
+            mPanel.setDisplayString("Start Date Error: Not Before End Date.");
         }
         else if( status == 3){//Error3
             mPanel.setDisplayString("Please Select Stock, Start Date and End Date.");

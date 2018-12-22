@@ -11,28 +11,17 @@ import java.util.ArrayList;
  */
 public class DataRetriever {
 
+    private String ticker_symbol;
     private static String URL;
-    private ArrayList<Object> Stock;
+    private StockData Stock;
 
     /**
-     * Constructor, input the three params of a stock to get its full URL.
-     * @param ticker_symbol
-     * @param startDate
-     * @param endDate
-     */
-    public DataRetriever(String ticker_symbol, String startDate, String endDate) {
-        this.URL = "https://quotes.wsj.com/" + ticker_symbol
-                + "/historical-prices/download?MOD_VIEW=page&num_rows=2000&startDate="
-                + startDate + "&endDate=" + endDate;
-    }
-
-    /**
-     * This method retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
+     * This getter retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
      * @return ArrayList<Object> of the stock data.
      * @exception IOException On input error.
      */
-    public ArrayList<Object> getStock() throws IOException {
-        Stock = new ArrayList<>();
+    public StockData getStock() throws IOException {
+        ArrayList<Object> StockList = new ArrayList<>();
         URL obj = new URL(this.URL);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
         connection.setRequestMethod("GET");
@@ -45,7 +34,7 @@ public class DataRetriever {
                 if (flag == true){//Use a flag to skip the first line
                     String Each[] = eachLine.split(",");
                     StockEachDay eachDay = new StockEachDay(Each[0], Each[1], Each[2], Each[3], Each[4], Each[5]);
-                    Stock.add(eachDay);
+                    StockList.add(eachDay);
                 }
                 else{
                     flag = true;
@@ -56,16 +45,30 @@ public class DataRetriever {
         } else {
             System.out.println("Wrong URL");
         }
+        Stock = new StockData(StockList, ticker_symbol);
         return Stock;
     }
 
     /**
-     * Use for testing the DataRetriever
+     * Constructor, input the three params of a stock to get its full URL.
+     * @param ticker_symbol
+     * @param startDate
+     * @param endDate
+     */
+    public DataRetriever(String ticker_symbol, String startDate, String endDate) {
+        this.ticker_symbol = ticker_symbol;
+        this.URL = "https://quotes.wsj.com/" + ticker_symbol
+                + "/historical-prices/download?MOD_VIEW=page&num_rows=2000&startDate="
+                + startDate + "&endDate=" + endDate;
+    }
+
+    /**
+     * Main method is just to test the DataRetriever.
      * */
     public static void main(String[] args) throws IOException {
         DataRetriever dr=new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
-        ArrayList<Object> stock = dr.getStock();
-        System.out.println(stock);
+        StockData Stock = dr.getStock();
+        System.out.println(Stock.getCloseList());
     }
 
 }

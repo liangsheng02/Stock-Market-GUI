@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -22,10 +21,10 @@ public class CenterPanel extends JPanel {
     private JButton GoButton;
     private GridBagConstraints gbc;
     private int ErrorStatus;
-    private ArrayList<Object> Stock;
+    private StockData Stock;
     private MarketGUI gui;
 
-    public ArrayList<Object> getStock() {
+    public StockData getStock() {
         return Stock;
     }
 
@@ -70,7 +69,8 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * Constructor, add components tp the CenterPanel.
+     * Constructor, add components to the CenterPanel.
+     * @param gui
      */
     public CenterPanel(MarketGUI gui) {
         this.gui = gui;
@@ -180,12 +180,12 @@ public class CenterPanel extends JPanel {
                     try {
                         Date start = new SimpleDateFormat("MM/dd/yyyy").parse(choStartDate);
                         Date end = new SimpleDateFormat("MM/dd/yyyy").parse(choEndDate);
-                        choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);
+                        choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);//(1/7/2018->01/07/2018)
                         choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
                         Date today = new Date();
-                        if (end.after(today)) { //Error1 "End Date Error: later than today."
+                        if (end.after(today)) { //Error1 "End Date Error: Later Than Today."
                             ErrorStatus = 1;
-                        } else if (start.after(end)) { // Error2 "Start Date Error: later than End Date."
+                        } else if (!start.before(end)) { // Error2 "Start Date Error: Not Before End Date."
                             ErrorStatus = 2;
                         } else { //OK
                             ErrorStatus = 0;
