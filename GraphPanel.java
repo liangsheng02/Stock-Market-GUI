@@ -1,37 +1,36 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.BasicStroke;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.util.Random;
+import javax.swing.JFrame;
 
 /**
  *
  * @author Sheng Liang
  */
 public class GraphPanel extends JPanel {
-    
+
     private int padding = 25;
     private int labelPadding = 25;
+    private Color lineColor = new Color(44, 102, 230, 180);
     private Color pointColor = new Color(100, 100, 100, 180);
     private Color gridColor = new Color(200, 200, 200, 200);
-    private Color lineColor = new Color(44, 102, 230, 180);
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
     private int pointWidth = 4;
     private int numberYDivisions = 10;
-    private StockData Stock;
+    private ArrayList<Double> scores;
 
-    public GraphPanel(StockData Stock) {
-        this.Stock = Stock;
+    public GraphPanel(ArrayList<Double> scores) {
+        this.scores = scores;
     }
 
     @Override
@@ -40,13 +39,13 @@ public class GraphPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double xScale = ((double) getWidth() - (2 * padding) - labelPadding) / (stock.size() - 1);
+        double xScale = ((double) getWidth() - (2 * padding) - labelPadding) / (scores.size() - 1);
         double yScale = ((double) getHeight() - 2 * padding - labelPadding) / (getMaxScore() - getMinScore());
 
-        List<Point> graphPoints = new ArrayList<>();
-        for (int i = 0; i < Stock.size(); i++) {
+        ArrayList<Point> graphPoints = new ArrayList<>();
+        for (int i = 0; i < scores.size(); i++) {
             int x1 = (int) (i * xScale + padding + labelPadding);
-            int y1 = (int) ((getMaxScore() - Stock.get(i)) * yScale + padding);
+            int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + padding);
             graphPoints.add(new Point(x1, y1));
         }
 
@@ -61,7 +60,7 @@ public class GraphPanel extends JPanel {
             int x1 = pointWidth + padding + labelPadding;
             int y0 = getHeight() - ((i * (getHeight() - padding * 2 - labelPadding)) / numberYDivisions + padding + labelPadding);
             int y1 = y0;
-            if (stock.size() > 0) {
+            if (scores.size() > 0) {
                 g2.setColor(gridColor);
                 g2.drawLine(padding + labelPadding + 1 + pointWidth, y0, getWidth() - padding, y1);
                 g2.setColor(Color.BLACK);
@@ -74,13 +73,13 @@ public class GraphPanel extends JPanel {
         }
 
         // and for x axis
-        for (int i = 0; i < stock.size(); i++) {
-            if (stock.size() > 1) {
-                int x0 = i * (getWidth() - padding * 2 - labelPadding) / (stock.size() - 1) + padding + labelPadding;
+        for (int i = 0; i < scores.size(); i++) {
+            if (scores.size() > 1) {
+                int x0 = i * (getWidth() - padding * 2 - labelPadding) / (scores.size() - 1) + padding + labelPadding;
                 int x1 = x0;
                 int y0 = getHeight() - padding - labelPadding;
                 int y1 = y0 - pointWidth;
-                if ((i % ((int) ((stock.size() / 20.0)) + 1)) == 0) {
+                if ((i % ((int) ((scores.size() / 20.0)) + 1)) == 0) {
                     g2.setColor(gridColor);
                     g2.drawLine(x0, getHeight() - padding - labelPadding - 1 - pointWidth, x1, padding);
                     g2.setColor(Color.BLACK);
@@ -126,7 +125,7 @@ public class GraphPanel extends JPanel {
 
     private double getMinScore() {
         double minScore = Double.MAX_VALUE;
-        for (Double score : stock) {
+        for (Double score : scores) {
             minScore = Math.min(minScore, score);
         }
         return minScore;
@@ -134,32 +133,32 @@ public class GraphPanel extends JPanel {
 
     private double getMaxScore() {
         double maxScore = Double.MIN_VALUE;
-        for (Double score : stock) {
+        for (Double score : scores) {
             maxScore = Math.max(maxScore, score);
         }
         return maxScore;
     }
 
-    public void setstock(List<Double> stock) {
-        this.stock = stock;
+    public void setScores(ArrayList<Double> scores) {
+        this.scores = scores;
         invalidate();
         this.repaint();
     }
 
-    public List<Double> getstock() {
-        return stock;
+    public ArrayList<Double> getScores() {
+        return scores;
     }
 
     private static void createAndShowGui() {
-        List<Double> stock = new ArrayList<>();
+        ArrayList<Double> scores = new ArrayList<>();
         Random random = new Random();
         int maxDataPoints = 40;
         int maxScore = 10;
         for (int i = 0; i < maxDataPoints; i++) {
-            stock.add((double) random.nextDouble() * maxScore);
-//            stock.add((double) i);
+            scores.add((double) random.nextDouble() * maxScore);
+//            scores.add((double) i);
         }
-        GraphPanel mainPanel = new GraphPanel(stock);
+        GraphPanel mainPanel = new GraphPanel(scores);
         mainPanel.setPreferredSize(new Dimension(800, 600));
         JFrame frame = new JFrame("DrawGraph");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

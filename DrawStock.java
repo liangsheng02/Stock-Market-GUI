@@ -1,171 +1,202 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import java.awt.BasicStroke;
+import java.awt.FontMetrics;
+import java.awt.Point;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Iterator;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
- * @author Rodrigo
+ * This class is a panel that draws line graph for the the input ArrayList.
+ * @author Sheng Liang
  */
 public class DrawStock extends JPanel {
 
-    private int width = 800;
-    private int heigth = 400;
-    private int padding = 25;
-    private int labelPadding = 25;
+    private Graphics2D g2;
+    private int pad = 30;
+    private int labelPad = 20;
     private Color pointColor = new Color(100, 100, 100, 180);
     private Color gridColor = new Color(200, 200, 200, 200);
     private Color lineColor = new Color(44, 102, 230, 180);
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
     private int pointWidth = 4;
-    private int numberYDivisions = 10;
-    private List<Double> scores;
+    private int yDivision = 10;
+    private ArrayList<Double> data;
+    private ArrayList<String> date;
+    private ArrayList<Point> graphPoints;
+    private Stroke oldStroke;
+    private int i ;
 
-    public DrawStock(List<Double> scores) {
-        this.scores = scores;
+    private double getMinData() {
+        double minData = Double.MAX_VALUE;
+        for (Double Data : data) {
+            minData = Math.min(minData, Data);
+        }
+        return minData;
+    }
+
+    private double getMaxData() {
+        double maxData = Double.MIN_VALUE;
+        for (Double Data : data) {
+            maxData = Math.max(maxData, Data);
+        }
+        return maxData;
+    }
+
+    /**
+     * This method finds the nearest point by x axis.
+     * */
+    private Point getNearest(int x) {
+        int dis = Integer.MAX_VALUE;
+        Point nearestP = new Point();
+        for (Point point : graphPoints) {
+            if (Math.abs(point.x-x) < dis) {
+                dis = Math.abs(point.x-x);
+                nearestP = point;
+            }
+        }
+        return nearestP;
+    }
+
+    public void setdata(ArrayList<Double> data) {
+        this.data = data;
+        invalidate();
+        this.repaint();
+    }
+
+    public DrawStock(ArrayList<Double> data, ArrayList<String> date) {
+        this.data = data;
+        this.date = date;
+        this.addMouseMotionListener(new panelMouseListener());
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double xScale = ((double) getWidth() - (2 * padding) - labelPadding) / (scores.size() - 1);
-        double yScale = ((double) getHeight() - 2 * padding - labelPadding) / (getMaxScore() - getMinScore());
-
-        List<Point> graphPoints = new ArrayList<>();
-        for (int i = 0; i < scores.size(); i++) {
-            int x1 = (int) (i * xScale + padding + labelPadding);
-            int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + padding);
+        //create graphPoints ArrayList to store data points;
+        double xScale = ((double) getWidth() - 2 * pad - labelPad) / (data.size() - 1);
+        double yScale = ((double) getHeight() - 2 * pad - labelPad) / (getMaxData() - getMinData());
+        graphPoints = new ArrayList<>();
+        Iterator dataIterator = data.iterator();
+        i = 0;
+        while (dataIterator.hasNext()) {
+            Double d = (Double) dataIterator.next();
+            int x1 = (int) (i * xScale + pad + labelPad);
+            int y1 = (int) ((getMaxData() - d) * yScale + pad);
             graphPoints.add(new Point(x1, y1));
+            i++;
         }
 
-        // draw white background
+        //draw background
         g2.setColor(Color.WHITE);
-        g2.fillRect(padding + labelPadding, padding, getWidth() - (2 * padding) - labelPadding, getHeight() - 2 * padding - labelPadding);
-        g2.setColor(Color.BLACK);
+        g2.fillRect(pad + labelPad, pad,
+                getWidth() - 2 * pad - labelPad,
+                getHeight() - 2 * pad - labelPad);
 
-        // create hatch marks and grid lines for y axis.
-        for (int i = 0; i < numberYDivisions + 1; i++) {
-            int x0 = padding + labelPadding;
-            int x1 = pointWidth + padding + labelPadding;
-            int y0 = getHeight() - ((i * (getHeight() - padding * 2 - labelPadding)) / numberYDivisions + padding + labelPadding);
-            int y1 = y0;
-            if (scores.size() > 0) {
+        //draw grid lines for y axis.
+        i = 0;
+        while (i <= yDivision) {
+            int x0 = pad + labelPad;
+            int y0 = getHeight() - ((i * (getHeight() - pad * 2 - labelPad)) / yDivision + pad + labelPad);
+            if (data.size() > 0) {
                 g2.setColor(gridColor);
-                g2.drawLine(padding + labelPadding + 1 + pointWidth, y0, getWidth() - padding, y1);
+                g2.drawLine(pad + labelPad + 1 + pointWidth, y0, getWidth() - pad, y0);
                 g2.setColor(Color.BLACK);
-                String yLabel = ((int) ((getMinScore() + (getMaxScore() - getMinScore()) * ((i * 1.0) / numberYDivisions)) * 100)) / 100.0 + "";
+                String yLabel = ((int) ((getMinData() + (getMaxData() - getMinData()) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
+                i++;
             }
-            g2.drawLine(x0, y0, x1, y1);
         }
 
-        // and for x axis
-        for (int i = 0; i < scores.size(); i++) {
-            if (scores.size() > 1) {
-                int x0 = i * (getWidth() - padding * 2 - labelPadding) / (scores.size() - 1) + padding + labelPadding;
-                int x1 = x0;
-                int y0 = getHeight() - padding - labelPadding;
-                int y1 = y0 - pointWidth;
-                if ((i % ((int) ((scores.size() / 20.0)) + 1)) == 0) {
+        //draw grid lines for x axis.
+        i = 0;
+        while (i < data.size()) {
+            if (data.size() > 1) {
+                int x0 = i * (getWidth() - pad * 2 - labelPad) / (data.size() - 1) + pad + labelPad;
+                int y0 = getHeight() - pad - labelPad;
+                if ((i % ((int) ((data.size() / 20.0)) + 1)) == 0) {
                     g2.setColor(gridColor);
-                    g2.drawLine(x0, getHeight() - padding - labelPadding - 1 - pointWidth, x1, padding);
                     g2.setColor(Color.BLACK);
                     String xLabel = i + "";
                     FontMetrics metrics = g2.getFontMetrics();
                     int labelWidth = metrics.stringWidth(xLabel);
                     g2.drawString(xLabel, x0 - labelWidth / 2, y0 + metrics.getHeight() + 3);
                 }
-                g2.drawLine(x0, y0, x1, y1);
             }
+            i++;
         }
 
-        // create x and y axes 
-        g2.drawLine(padding + labelPadding, getHeight() - padding - labelPadding, padding + labelPadding, padding);
-        g2.drawLine(padding + labelPadding, getHeight() - padding - labelPadding, getWidth() - padding, getHeight() - padding - labelPadding);
-
-        Stroke oldStroke = g2.getStroke();
+        //Draw lines!
+        oldStroke = g2.getStroke();
         g2.setColor(lineColor);
         g2.setStroke(GRAPH_STROKE);
-        for (int i = 0; i < graphPoints.size() - 1; i++) {
-            int x1 = graphPoints.get(i).x;
-            int y1 = graphPoints.get(i).y;
-            int x2 = graphPoints.get(i + 1).x;
-            int y2 = graphPoints.get(i + 1).y;
-            g2.drawLine(x1, y1, x2, y2);
-        }
+        i = 0;
+        while (i < graphPoints.size() - 1) {
+            g2.drawLine(graphPoints.get(i).x, graphPoints.get(i).y,
+                    graphPoints.get(i+1).x, graphPoints.get(i+1).y);//draw lines!
+            i++;
+        }//can't use Iterator here because it has to get the i+1 element
 
+        //Draw points!
         g2.setStroke(oldStroke);
         g2.setColor(pointColor);
-        for (int i = 0; i < graphPoints.size(); i++) {
-            int x = graphPoints.get(i).x - pointWidth / 2;
-            int y = graphPoints.get(i).y - pointWidth / 2;
-            int ovalW = pointWidth;
-            int ovalH = pointWidth;
-            g2.fillOval(x, y, ovalW, ovalH);
+        Iterator pointsIterator = graphPoints.iterator();
+        while (pointsIterator.hasNext()) {
+            Point p = (Point) pointsIterator.next();
+            g2.fillOval(p.x - pointWidth/2, p.y - pointWidth/2, pointWidth, pointWidth);//draw points!
+        }
+
+        //draw x and y axes
+        g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
+                pad + labelPad, pad);
+        g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
+                getWidth() - pad, getHeight() - pad - labelPad);
+    }
+
+    /**
+     * Create a MouseListener that detects the mouse location and shows the nearest point by x axis.
+     * */
+    private class panelMouseListener implements MouseMotionListener {
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            //do nothing!
+        }
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            Point nearestP = getNearest(e.getX());
+
+            g2.setColor(Color.BLACK);
+            g2.drawLine(nearestP.x, getHeight() - pad - labelPad - 1 - pointWidth, nearestP.x, nearestP.y);
+            System.out.println("x0 "+nearestP.x + ",y0 " + (getHeight() - pad - labelPad - 1 - pointWidth) + ",x1 "+nearestP.x + ",y1 "+ nearestP.y);
         }
     }
 
-//    @Override
-//    public Dimension getPreferredSize() {
-//        return new Dimension(width, heigth);
-//    }
-
-    private double getMinScore() {
-        double minScore = Double.MAX_VALUE;
-        for (Double score : scores) {
-            minScore = Math.min(minScore, score);
-        }
-        return minScore;
-    }
-
-    private double getMaxScore() {
-        double maxScore = Double.MIN_VALUE;
-        for (Double score : scores) {
-            maxScore = Math.max(maxScore, score);
-        }
-        return maxScore;
-    }
-
-    public void setScores(List<Double> scores) {
-        this.scores = scores;
-        invalidate();
-        this.repaint();
-    }
-
-    public List<Double> getScores() {
-        return scores;
-    }
-
-    private static void createAndShowGui() {
-        List<Double> scores = new ArrayList<>();
-        Random random = new Random();
-        int maxDataPoints = 40;
-        int maxScore = 10;
-        for (int i = 0; i < maxDataPoints; i++) {
-            scores.add((double) random.nextDouble() * maxScore);
-//            scores.add((double) i);
-        }
-        DrawStock mainPanel = new DrawStock(scores);
+    /**
+     * Main method for testing
+     * */
+    public static void main(String[] args) throws IOException {
+        DataRetriever dr = new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
+        StockData Stock = dr.getStock();
+        ArrayList<Double> openList = Stock.getOpenList();
+        ArrayList<String> dateList = Stock.getDateList();
+        DrawStock mainPanel = new DrawStock(openList, dateList);
         mainPanel.setPreferredSize(new Dimension(800, 600));
         JFrame frame = new JFrame("DrawGraph");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -175,11 +206,4 @@ public class DrawStock extends JPanel {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGui();
-            }
-        });
-    }
 }
