@@ -143,6 +143,7 @@ public class CenterPanel extends JPanel {
         //Add label "Find a Stock  :"
         final JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
         gbc = setGbc(0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
+        gbc.gridwidth = 2;
         this.add(label6, gbc);
 
         //Add GoButton

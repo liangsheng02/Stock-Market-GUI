@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This Class retrieves stock data by URL and store them as StockEachDay objects into an ArrayList.
@@ -45,6 +46,7 @@ public class DataRetriever {
         } else {
             System.out.println("Wrong URL");
         }
+        Collections.reverse(StockList);
         Stock = new StockData(StockList, ticker_symbol);
         return Stock;
     }
