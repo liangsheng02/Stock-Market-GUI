@@ -121,7 +121,7 @@ public class CenterPanel extends JPanel {
         this.gui = gui;
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(-12828863));
-        Font CenterPanelFont = StaticMethods.getFont(null, -1, -1, this.getFont());
+        Font CenterPanelFont = StaticMethods.getFont("Arial", -1, -1, this.getFont());
         if (CenterPanelFont != null) {
             this.setFont(CenterPanelFont);
         }

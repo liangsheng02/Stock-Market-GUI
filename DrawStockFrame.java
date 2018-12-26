@@ -6,12 +6,23 @@ import javax.swing.*;
 
 /**
  * This class is a JFrame that draws the stock data.
+ * The buttons on the west choose which data would be showed on the graph (default: Close).
+ * The JLabel shows the ticker symbol and number of Close changes during the period,
+ * if stock raise, the label would be green, else red.
  * @author Sheng Liang
  * */
 public class DrawStockFrame extends JFrame implements ActionListener {
 
     private DrawStock drawStock;
     private StockData stockData;
+    private String labelText;
+    private Double Close0;
+    private Double Close1;
+    private Color backgroundColor = new Color(60, 63, 65, 255);
+    private Color stringColor = new Color(186, 186, 186, 180);
+    private Color riseColor = new Color(0, 255, 0, 180);
+    private Color fallColor = new Color(255, 0, 0, 180);
+
 
     /**
      * Constructor, add a DrawStock JPanel and a columnOfButtons JPanel on the Frame.
@@ -29,14 +40,27 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         contentPane.add(drawStock, BorderLayout.CENTER);
 
         //Create a column of buttons and one label using GridLayout in an ordinary JPanel on the EAST side.
-        JPanel columnOfButtons = new JPanel(new GridLayout(7,1));
-        JLabel ticker_symbol = new JLabel(stockData.getTicker_symbol(), JLabel.CENTER);
+        JPanel columnOfButtons = new JPanel(new GridLayout(7,1,0,10));
+        columnOfButtons.setBackground(backgroundColor);
+        JLabel ticker_symbol = new JLabel("",JLabel.CENTER);
         Font labelFont = StaticMethods.getFont("Arial Black", -1, 16, ticker_symbol.getFont());
         if (labelFont != null) {ticker_symbol.setFont(labelFont);}
-        if (stockData.getCloseList().get(0) > stockData.getCloseList().get(stockData.getCloseList().size()-1)) {
-            ticker_symbol.setForeground(new Color(255,0,0));
-        }//if the stock falls, use rad color on the label. else if the stock rises, use green.
-        else{ticker_symbol.setForeground(new Color(0,255,0));}
+        Close0 = stockData.getCloseList().get(0);
+        Close1 = stockData.getCloseList().get(stockData.getCloseList().size()-1);
+        //if the stock falls, use rad color and "-" on the label. Use HTML to change line.
+        if (Close0 > Close1) {
+            labelText = "<html><body><p align=\"center\">" + stockData.getTicker_symbol() + "<br/>"
+                    + "-" + String.format("%.2f",Close0-Close1) + "</p></body></html>";
+            ticker_symbol.setForeground(fallColor);
+        }
+        //if the stock rises, use green and "+".
+        else{
+            labelText = "<html><body><p align=\"center\">" + stockData.getTicker_symbol() + "<br/>"
+                    + "+" + String.format("%.2f",Close1-Close0) + "</p></body></html>";
+            ticker_symbol.setForeground(riseColor);
+
+        }
+        ticker_symbol.setText(labelText);
         //add buttons
         columnOfButtons.add(ticker_symbol);
         makeButton(columnOfButtons, "Open", this);
@@ -56,6 +80,10 @@ public class DrawStockFrame extends JFrame implements ActionListener {
      * */
     private void makeButton(JPanel p, String name, ActionListener target) {
         JButton b = new JButton(name);
+        b.setBackground(backgroundColor);
+        Font f = StaticMethods.getFont("Arial Black", -1, -1, this.getFont());
+        if (f != null){b.setFont(f);}
+        b.setForeground(stringColor);
         // add it to the specified JPanel and make the JPanel listen
         p.add(b);
         b.addActionListener(target);
@@ -94,7 +122,7 @@ public class DrawStockFrame extends JFrame implements ActionListener {
      * Main method for testing.
      * */
     public static void main(String args[]) throws IOException {
-        DataRetriever dr = new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
+        DataRetriever dr = new DataRetriever("FB", "01/01/2018", "12/31/2018");
         StockData stockData = dr.getStockData();
         JFrame frm = new DrawStockFrame(stockData);
         frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

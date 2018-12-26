@@ -31,15 +31,16 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     private Graphics2D g2;
     private int pad = 30;
     private int labelPad = 20;
-    private Color backgroundColor = new Color(174, 176, 178, 180);
-    private Color pointColor = new Color(60, 63, 65, 180);
+    private Color grapColor = new Color(38, 41, 43, 255);
+    private Color backgroundColor = new Color(60, 63, 65, 255);
+    private Color pointColor = new Color(186, 186, 186, 180);
     private Color gridColor = new Color(136, 138, 141, 200);
-    private Color lineColor = new Color(62, 133, 158, 120);
-    private Color riseColor = new Color(0, 255, 0, 180);
-    private Color fallColor = new Color(255, 0, 0, 180);
-    private Color dottedColor = new Color(97, 155, 158, 80);
-    private Color stringColor = new Color(97, 155, 158, 180);
-    private Color labelColor = new Color(97, 155, 158, 180);
+    private Color lineColor = new Color(186, 186, 186, 120);
+    private Color riseColor = new Color(0, 255, 0, 120);
+    private Color fallColor = new Color(255, 0, 0, 120);
+    private Color dottedColor = new Color(186, 186, 186, 80);
+    private Color stringColor = new Color(186, 186, 186, 180);
+    private Color labelColor = new Color(186, 186, 186, 180);
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
     private int pointWidth = 8;
     private int yDivision = 10;
@@ -98,6 +99,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         this.max = StaticMethods.getMaxData(data);
         this.min = StaticMethods.getMinData(data);
         this.addMouseMotionListener(this);
+        this.setBackground(backgroundColor);
 
         //initialise the nearest point of the mouse.
         this.nearestP=this.nearestX=this.nearestY= new Point(0,0);
@@ -115,39 +117,41 @@ public class DrawStock extends JPanel implements MouseMotionListener {
 
         //create graphPoints ArrayList to store data points;
         xScale = ((double) getWidth() - 2*pad - labelPad) / (data.size() - 1);
-        yScale = ((double) getHeight()- 2*pad - labelPad) / (max - min);
+        yScale = ((double) getHeight()- 2*pad - labelPad) / (1.1*max - 0.8*min);
         graphPoints = new ArrayList<>();
         Iterator dataIterator = data.iterator();
         i = 0;
         while (dataIterator.hasNext()) {
             Double d = (Double) dataIterator.next();
             int x1 = (int) (i * xScale + pad + labelPad);
-            int y1 = (int) ((StaticMethods.getMaxData(data) - d) * yScale + pad);
+            int y1 = (int) ((1.1*max - d) * yScale + pad);
             graphPoints.add(new Point(x1, y1));
             i++;
         }
 
         //draw background
-        g2.setColor(backgroundColor);
+        g2.setColor(grapColor);
         g2.fillRect(pad + labelPad, pad,getWidth() - 2*pad - labelPad,getHeight() - 2*pad - labelPad);
 
-        //draw x and y axis
+        //draw x and y boundaries
         g2.setColor(labelColor);
         g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
                 pad + labelPad, pad);
+        g2.drawLine(getWidth() - pad, getHeight() - pad - labelPad,
+                getWidth() - pad, pad);
         g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
                 getWidth() - pad, getHeight() - pad - labelPad);
 
         //draw grid lines for y axis.
         i = 0;
         while (i <= yDivision) {
-            int x0 = pad + labelPad;
+            int x0 = pad + labelPad - 3;
             int y0 = getHeight() - ((i * (getHeight() - pad * 2 - labelPad)) / yDivision + pad + labelPad);
             if (data.size() > 0) {
                 g2.setColor(gridColor);
-                g2.drawLine(pad + labelPad + 1 + pointWidth, y0, getWidth() - pad, y0);
+                g2.drawLine(pad + labelPad, y0, getWidth() - pad, y0);
                 g2.setColor(labelColor);
-                String yLabel = ((int) ((min + (max - min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
+                String yLabel = ((int) ((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
