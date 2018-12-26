@@ -16,14 +16,14 @@ public class DataRetriever {
 
     private String ticker_symbol;
     private static String URL;
-    private StockData Stock;
+    private StockData stockData;
 
     /**
      * This getter retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
      * @return StockData object of the stock data.
      * @exception IOException On input error.
      */
-    public StockData getStock() throws IOException {
+    public StockData getStockData() throws IOException {
         ArrayList<Object> StockList = new ArrayList<>();
         URL obj = new URL(this.URL);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
@@ -50,8 +50,8 @@ public class DataRetriever {
         }
         //reverse the ArrayList to make the earliest date in the front, since the latest date is on the top in the URL.
         Collections.reverse(StockList);
-        Stock = new StockData(StockList, ticker_symbol);
-        return Stock;
+        stockData = new StockData(StockList, ticker_symbol);
+        return stockData;
     }
 
     /**
@@ -72,7 +72,7 @@ public class DataRetriever {
      * */
     public static void main(String[] args) throws IOException {
         DataRetriever dr=new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
-        StockData Stock = dr.getStock();
+        StockData Stock = dr.getStockData();
         System.out.println(Stock.getCloseList());
     }
 

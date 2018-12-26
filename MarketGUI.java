@@ -6,7 +6,8 @@ public class MarketGUI {
     private JPanel NorthPanel;
     private MessagePanel mPanel;
     private CenterPanel cPanel;
-    private StockData Stock;
+    private StockData stockData;
+    private GridBagConstraints MainGBC;
 
     /**
      * This method receives a status, if the status is OK then gets the stock from CenterPanel,
@@ -15,8 +16,10 @@ public class MarketGUI {
      */
     public void getMessage(int status){
         if (status == 0){//OK
-            Stock = cPanel.getStock();
-            mPanel.setDisplayString("Welcome to MarketGUI !");
+            stockData = cPanel.getStockData();
+            mPanel.setDisplayString("Your last selection is : " + stockData.getTicker_symbol()
+                    + " from " + stockData.getDateList().get(0)
+                    + " to " + stockData.getDateList().get(stockData.getDateList().size()-1));
         }
         else if(status == 1){//Error1
             mPanel.setDisplayString("End Date Error: Later Than today.");
@@ -33,7 +36,7 @@ public class MarketGUI {
         MainPanel = new JPanel();
         MainPanel.setLayout(new GridBagLayout());
         MainPanel.setForeground(new Color(-12828863));
-        GridBagConstraints MainGBC=new GridBagConstraints();
+        MainGBC=new GridBagConstraints();
 
         //North
         NorthPanel = new JPanel();
@@ -82,31 +85,4 @@ public class MarketGUI {
         frame.setVisible(true);
         //frame.setResizable(false);
     }
-
-    /**
-     * @noinspection ALL
-     */
-    private Font getFont(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null) return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
-        }
-        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent getRootComponent() {
-        return MainPanel;
-    }
-
 }

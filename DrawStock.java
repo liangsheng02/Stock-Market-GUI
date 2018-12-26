@@ -208,9 +208,9 @@ public class DrawStock extends JPanel implements MouseMotionListener {
      * */
     public static void main(String[] args) throws IOException {
         DataRetriever dr = new DataRetriever("AAPL", "01/01/2018", "12/31/2018");
-        StockData Stock = dr.getStock();
-        ArrayList<Double> openList = Stock.getOpenList();
-        ArrayList<String> dateList = Stock.getDateList();
+        StockData stockData = dr.getStockData();
+        ArrayList<Double> openList = stockData.getOpenList();
+        ArrayList<String> dateList = stockData.getDateList();
         DrawStock drawStock = new DrawStock(openList, dateList);
         drawStock.setPreferredSize(new Dimension(800, 600));
         JFrame frame = new JFrame();

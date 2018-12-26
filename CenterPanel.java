@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,33 +21,11 @@ public class CenterPanel extends JPanel {
     private JButton GoButton;
     private GridBagConstraints gbc;
     private int ErrorStatus;
-    private StockData Stock;
+    private StockData stockData;
     private MarketGUI gui;
 
-    public StockData getStock() {
-        return Stock;
-    }
-
-    /**
-     * This setter is used to set a GridBagConstraints.
-     * @param x
-     * @param y
-     * @param anchor
-     * @param fill
-     * @param top
-     * @param left
-     * @param bottom
-     * @param right
-     * @return a GridBagConstraints
-     */
-    public GridBagConstraints setGbc(int x, int y, int anchor, int fill, int top, int left, int bottom, int right) {
-        gbc = new GridBagConstraints();
-        gbc.gridx = x;
-        gbc.gridy = y;
-        gbc.anchor = anchor;
-        gbc.fill = fill;
-        gbc.insets = new Insets(top, left, bottom, right);
-        return gbc;
+    public StockData getStockData() {
+        return stockData;
     }
 
     /**
@@ -62,7 +39,7 @@ public class CenterPanel extends JPanel {
     public JLabel setLabel(String labelText, String font, int style, int size) {
         JLabel label = new JLabel();
         label.setBackground(new Color(-4539718));
-        Font labelFont = this.getFont(font, style, size, label.getFont());
+        Font labelFont = StaticMethods.getFont(font, style, size, label.getFont());
         if (labelFont != null) label.setFont(labelFont);
         label.setForeground(new Color(-4539718));
         label.setText(labelText);
@@ -70,106 +47,7 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * Constructor, add components to the CenterPanel.
-     * @param gui
-     */
-    public CenterPanel(MarketGUI gui) {
-        this.gui = gui;
-        this.setLayout(new GridBagLayout());
-        this.setBackground(new Color(-12828863));
-        Font CenterPanelFont = this.getFont(null, -1, -1, this.getFont());
-        if (CenterPanelFont != null) this.setFont(CenterPanelFont);
-        this.setForeground(new Color(-4539718));
-        this.setInheritsPopupMenu(false);
-
-        //Add StartMonthCombo
-        StartMonthCombo = new JComboBox();
-        gbc = setGbc(1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
-        this.add(StartMonthCombo, gbc);
-        //Add StartDayCombo
-        StartDayCombo = new JComboBox();
-        gbc = setGbc(2, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
-        this.add(StartDayCombo, gbc);
-        //Add StartYearCombo
-        StartYearCombo = new JComboBox();
-        gbc = setGbc(3, 1, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
-        this.add(StartYearCombo, gbc);
-        //Add EndMonthCombo
-        EndMonthCombo = new JComboBox();
-        gbc = setGbc(1, 2, 17, 2, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
-        this.add(EndMonthCombo, gbc);
-        //Add EndDayCombo
-        EndDayCombo = new JComboBox();
-        gbc = setGbc(2, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
-        this.add(EndDayCombo, gbc);
-        //Add EndYearCombo
-        EndYearCombo = new JComboBox();
-        gbc = setGbc(3, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
-        this.add(EndYearCombo, gbc);
-
-        AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
-        AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
-        DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
-        DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
-        StartMonthCombo.addItemListener(dateComboListener1);
-        //StartDayCombo.addItemListener(dateComboListener1);
-        StartYearCombo.addItemListener(dateComboListener1);
-        EndMonthCombo.addItemListener(dateComboListener2);
-        //EndDayCombo.addItemListener(dateComboListener2);
-        EndYearCombo.addItemListener(dateComboListener2);
-
-        //Add StockCombo
-        StockCombo = new JComboBox();
-        StockCombo.setForeground(new Color(-12828863));
-        final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
-        defaultComboBoxModel.addElement("AAPL");
-        defaultComboBoxModel.addElement("FB");
-        defaultComboBoxModel.addElement("GOOG");
-        defaultComboBoxModel.addElement("YHOO");
-        StockCombo.setModel(defaultComboBoxModel);
-        gbc = setGbc(2, 3, 17, 2, 10, 10 ,0, 10);//anchor: WEST, fill: HORIZONTAL
-        this.add(StockCombo, gbc);
-
-        //Add label "Start Date :"
-        final JLabel label1 = setLabel("Start Date :","Arial Black",-1,-1);
-        gbc = setGbc(0, 1, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
-        this.add(label1, gbc);
-        //Add label "End Date   :"
-        final JLabel label2 = setLabel("End Date   :","Arial Black",-1,-1);
-        gbc = setGbc(0, 2, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
-        this.add(label2, gbc);
-        //Add label "Month"
-        final JLabel label3 = setLabel("Month","Arial Black",-1,-1);
-        gbc = setGbc(1, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
-        this.add(label3, gbc);
-        //Add label "Day"
-        final JLabel label4 = setLabel("Day","Arial Black",-1,-1);
-        gbc = setGbc(2, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
-        this.add(label4, gbc);
-        //Add label "Year"
-        final JLabel label5 = setLabel("Year","Arial Black",-1,-1);
-        gbc = setGbc(3, 0, 17, 1, 0, 10 ,0, 10);//anchor: WEST, fill: BOTH
-        this.add(label5, gbc);
-        //Add label "Find a Stock  :"
-        final JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
-        gbc = setGbc(0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
-        gbc.gridwidth = 2;
-        this.add(label6, gbc);
-
-        //Add GoButton
-        GoButton = new JButton();
-        GoButton.setBackground(new Color(-12828863));
-        Font GoButtonFont = this.getFont("Arial Black", -1, -1, GoButton.getFont());
-        if (GoButtonFont != null) GoButton.setFont(GoButtonFont);
-        GoButton.setForeground(new Color(-4539718));
-        GoButton.setText("Go !");
-        gbc = setGbc(3, 3, 17, 2, 10, 10 ,0, 10);//anchor: None, fill: HORIZONTAL
-        this.add(GoButton, gbc);
-        GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
-    }
-
-    /**
-     * Create ActionListener for GoButton, to check whether the dates are legal, and change ErrorStatus.
+     * This class creates ActionListener for GoButton, to check whether the dates are legal, and change ErrorStatus.
      * */
     private class GoButtonActionListener implements ActionListener {
         @Override
@@ -201,7 +79,7 @@ public class CenterPanel extends JPanel {
                         } else { //OK
                             ErrorStatus = 0;
                             DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
-                            Stock = dr.getStock();
+                            stockData = dr.getStockData();
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace(System.err);
@@ -215,7 +93,10 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * This method initialises the three drop down boxes for month, year and day.
+     * This method initialises the three ComboBoxes for month, year and day.
+     * @param Month JComboBox, add 12 months to the this JComboBox
+     * @param Day JComboBox, add 31 days to the this JComboBox
+     * @param Year JComboBox, add 2016 to 2019 to the this JComboBox
      */
     public void AddItems(JComboBox Month, JComboBox Day, JComboBox Year) {
         // add 12 months
@@ -233,26 +114,104 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * This method is used to set font.
-     * @param fontName
-     * @param style
-     * @param size
-     * @param currentFont
-     * @return a Font
+     * Constructor, add components to the CenterPanel.
+     * @param gui MarketGUI object
      */
-    private Font getFont(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null) return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
+    public CenterPanel(MarketGUI gui) {
+        this.gui = gui;
+        this.setLayout(new GridBagLayout());
+        this.setBackground(new Color(-12828863));
+        Font CenterPanelFont = StaticMethods.getFont(null, -1, -1, this.getFont());
+        if (CenterPanelFont != null) {
+            this.setFont(CenterPanelFont);
         }
-        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        this.setForeground(new Color(-4539718));
+        this.setInheritsPopupMenu(false);
+
+        //Add StartMonthCombo
+        StartMonthCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(null,1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
+        this.add(StartMonthCombo, gbc);
+        //Add StartDayCombo
+        StartDayCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        this.add(StartDayCombo, gbc);
+        //Add StartYearCombo
+        StartYearCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        this.add(StartYearCombo, gbc);
+        //Add EndMonthCombo
+        EndMonthCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(gbc,1, 2, 17, 2, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
+        this.add(EndMonthCombo, gbc);
+        //Add EndDayCombo
+        EndDayCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(gbc,2, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        this.add(EndDayCombo, gbc);
+        //Add EndYearCombo
+        EndYearCombo = new JComboBox();
+        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        this.add(EndYearCombo, gbc);
+
+        //initialise the three combo boxes, and add ItemListener to Month and Year.
+        AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
+        AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
+        DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
+        DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
+        StartMonthCombo.addItemListener(dateComboListener1);
+        StartYearCombo.addItemListener(dateComboListener1);
+        EndMonthCombo.addItemListener(dateComboListener2);
+        EndYearCombo.addItemListener(dateComboListener2);
+
+        //Add StockCombo
+        StockCombo = new JComboBox();
+        StockCombo.setForeground(new Color(-12828863));
+        final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
+        defaultComboBoxModel.addElement("AAPL");
+        defaultComboBoxModel.addElement("FB");
+        defaultComboBoxModel.addElement("GOOG");
+        defaultComboBoxModel.addElement("YHOO");
+        StockCombo.setModel(defaultComboBoxModel);
+        gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 10 ,0, 10);//anchor: WEST, fill: HORIZONTAL
+        this.add(StockCombo, gbc);
+
+        //Add label "Start Date :"
+        final JLabel label1 = setLabel("Start Date :","Arial Black",-1,-1);
+        gbc = StaticMethods.setGbc(gbc,0, 1, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
+        this.add(label1, gbc);
+        //Add label "End Date   :"
+        final JLabel label2 = setLabel("End Date   :","Arial Black",-1,-1);
+        gbc = StaticMethods.setGbc(gbc,0, 2, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
+        this.add(label2, gbc);
+        //Add label "Month"
+        final JLabel label3 = setLabel("Month","Arial Black",-1,-1);
+        gbc = StaticMethods.setGbc(gbc,1, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
+        this.add(label3, gbc);
+        //Add label "Day"
+        final JLabel label4 = setLabel("Day","Arial Black",-1,-1);
+        gbc = StaticMethods.setGbc(gbc,2, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
+        this.add(label4, gbc);
+        //Add label "Year"
+        final JLabel label5 = setLabel("Year","Arial Black",-1,-1);
+        gbc = StaticMethods.setGbc(gbc,3, 0, 17, 1, 0, 10 ,0, 10);//anchor: WEST, fill: BOTH
+        this.add(label5, gbc);
+        //Add label "Find a Stock  :"
+        final JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
+        gbc = StaticMethods.setGbc(gbc,0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
+        gbc.gridwidth = 2;
+        this.add(label6, gbc);
+
+        //Add GoButton
+        GoButton = new JButton();
+        GoButton.setBackground(new Color(-12828863));
+        Font GoButtonFont = StaticMethods.getFont("Arial Black", -1, -1, GoButton.getFont());
+        if (GoButtonFont != null) {
+            GoButton.setFont(GoButtonFont);
+        }
+        GoButton.setForeground(new Color(-4539718));
+        GoButton.setText("Go !");
+        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 2, 10,10,0,10);//anchor: None, fill: HORIZONTAL
+        this.add(GoButton, gbc);
+        GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
     }
 }
