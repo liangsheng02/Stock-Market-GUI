@@ -1,6 +1,13 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * This class is used to store and read stock data.
+ * It contains the ticker symbol, and an StockList during a period.
+ * Data could be read into ArrayLists by using the getters in this class.
+ * Each element of the StockList is a StockEachDay object, which contains 6 params.
+ * @author Sheng Liang
+ * */
 public class StockData {
 
     private String ticker_symbol;
@@ -42,7 +49,7 @@ public class StockData {
         Iterator iterator = StockList.iterator();
         while (iterator.hasNext()) {
             sed = iterator.next();
-            HighList.add(((StockEachDay) sed).getOpen());
+            HighList.add(((StockEachDay) sed).getHigh());
         }
         return HighList;
     }
@@ -52,7 +59,7 @@ public class StockData {
         Iterator iterator = StockList.iterator();
         while (iterator.hasNext()) {
             sed = iterator.next();
-            LowList.add(((StockEachDay) sed).getOpen());
+            LowList.add(((StockEachDay) sed).getLow());
         }
         return LowList;
     }
@@ -62,7 +69,7 @@ public class StockData {
         Iterator iterator = StockList.iterator();
         while (iterator.hasNext()) {
             sed = iterator.next();
-            CloseList.add(((StockEachDay) sed).getOpen());
+            CloseList.add(((StockEachDay) sed).getClose());
         }
         return CloseList;
     }
@@ -72,11 +79,16 @@ public class StockData {
         Iterator iterator = StockList.iterator();
         while (iterator.hasNext()) {
             sed = iterator.next();
-            VolumeList.add(((StockEachDay) sed).getOpen());
+            VolumeList.add(((StockEachDay) sed).getVolume());
         }
         return VolumeList;
     }
 
+    /**
+     * Constructor
+     * @param StockList ArrayList of StockEachDay objects
+     * @param ticker_symbol String such as "FB"
+     * */
     public StockData(ArrayList<Object> StockList, String ticker_symbol) {
         this.StockList = StockList;
         this.ticker_symbol = ticker_symbol;

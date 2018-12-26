@@ -1,5 +1,6 @@
 /**
- * This Class is used to store the six stock params of each day.
+ * This Class is used to store the six stock params (String) of each day.
+ * They can be read into String/Double type by the getters.
  * @author Sheng Liang
  */
 public class StockEachDay {
@@ -32,12 +33,12 @@ public class StockEachDay {
 
     /**
      * Constructor, input the six params of a stock each day.
-     * @param Date
-     * @param Open
-     * @param High
-     * @param Low
-     * @param Close
-     * @param Volume
+     * @param Date String such as "01/01/2019"
+     * @param Open String such as "129.13"
+     * @param High String such as "129.13"
+     * @param Low String such as "129.13"
+     * @param Close String such as "129.13"
+     * @param Volume String such as "34424"
      */
     public StockEachDay(String Date,String Open,String High,String Low,String Close,String Volume) {
         this.Date = Date;

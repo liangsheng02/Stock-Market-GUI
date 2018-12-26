@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * This Class retrieves stock data by URL and store them as StockEachDay objects into an ArrayList.
+ * This Class retrieves stock data by URL and store them as a StockData object.
+ * The StockData object contains the ticker symbol, and an ArrayList of the stock data during a period.
+ * Each element of the stock data ArrayList is a StockEachDay object, which contains 6 params.
  * @author Sheng Liang
  */
 public class DataRetriever {
@@ -18,7 +20,7 @@ public class DataRetriever {
 
     /**
      * This getter retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
-     * @return ArrayList<Object> of the stock data.
+     * @return StockData object of the stock data.
      * @exception IOException On input error.
      */
     public StockData getStock() throws IOException {
@@ -46,6 +48,7 @@ public class DataRetriever {
         } else {
             System.out.println("Wrong URL");
         }
+        //reverse the ArrayList to make the earliest date in the front, since the latest date is on the top in the URL.
         Collections.reverse(StockList);
         Stock = new StockData(StockList, ticker_symbol);
         return Stock;
@@ -53,9 +56,9 @@ public class DataRetriever {
 
     /**
      * Constructor, input the three params of a stock to get its full URL.
-     * @param ticker_symbol
-     * @param startDate
-     * @param endDate
+     * @param ticker_symbol String such as "FB"
+     * @param startDate date such as 01/01/2019
+     * @param endDate date such as 01/01/2019
      */
     public DataRetriever(String ticker_symbol, String startDate, String endDate) {
         this.ticker_symbol = ticker_symbol;
@@ -65,7 +68,7 @@ public class DataRetriever {
     }
 
     /**
-     * Main method is just to test the DataRetriever.
+     * Main method for testing.
      * */
     public static void main(String[] args) throws IOException {
         DataRetriever dr=new DataRetriever("AAPL", "01/01/2018", "12/31/2018");

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -81,32 +82,41 @@ public class CenterPanel extends JPanel {
         this.setForeground(new Color(-4539718));
         this.setInheritsPopupMenu(false);
 
-        DateComboSetter dcc1 = new DateComboSetter(new JComboBox(), new JComboBox(), new JComboBox());
-        DateComboSetter dcc2 = new DateComboSetter(new JComboBox(), new JComboBox(), new JComboBox());
         //Add StartMonthCombo
-        StartMonthCombo = dcc1.getMonth();
+        StartMonthCombo = new JComboBox();
         gbc = setGbc(1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         this.add(StartMonthCombo, gbc);
         //Add StartDayCombo
-        StartDayCombo = dcc1.getDay();
+        StartDayCombo = new JComboBox();
         gbc = setGbc(2, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
-        StartYearCombo = dcc1.getYear();
+        StartYearCombo = new JComboBox();
         gbc = setGbc(3, 1, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
-        EndMonthCombo = dcc2.getMonth();
+        EndMonthCombo = new JComboBox();
         gbc = setGbc(1, 2, 17, 2, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         this.add(EndMonthCombo, gbc);
         //Add EndDayCombo
-        EndDayCombo = dcc2.getDay();
+        EndDayCombo = new JComboBox();
         gbc = setGbc(2, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
-        EndYearCombo = dcc2.getYear();
+        EndYearCombo = new JComboBox();
         gbc = setGbc(3, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
+
+        AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
+        AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
+        DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
+        DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
+        StartMonthCombo.addItemListener(dateComboListener1);
+        //StartDayCombo.addItemListener(dateComboListener1);
+        StartYearCombo.addItemListener(dateComboListener1);
+        EndMonthCombo.addItemListener(dateComboListener2);
+        //EndDayCombo.addItemListener(dateComboListener2);
+        EndYearCombo.addItemListener(dateComboListener2);
 
         //Add StockCombo
         StockCombo = new JComboBox();
@@ -204,6 +214,23 @@ public class CenterPanel extends JPanel {
         }
     }
 
+    /**
+     * This method initialises the three drop down boxes for month, year and day.
+     */
+    public void AddItems(JComboBox Month, JComboBox Day, JComboBox Year) {
+        // add 12 months
+        for (int i = 0; i < 12; i++) {
+            Month.addItem(i + 1);
+        }
+        // add years from 2016 to 2019
+        for (int i = 2016; i <= 2019; i++) {
+            Year.addItem(i);
+        }
+        // add 31 days
+        for (int j = 0; j < 31; j++) {
+            Day.addItem(j + 1);
+        }
+    }
 
     /**
      * This method is used to set font.
