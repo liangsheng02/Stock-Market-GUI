@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class StaticMethods {
 
@@ -50,5 +51,31 @@ public class StaticMethods {
         gbc.fill = fill;
         gbc.insets = new Insets(top, left, bottom, right);
         return gbc;
+    }
+
+    /**
+     * This method finds the minimum in an ArrayList.
+     * @param data ArrayList<Double>
+     * @return the minimum in data
+     * */
+    public static double getMinData(ArrayList<Double> data) {
+        double minData = Double.MAX_VALUE;
+        for (Double Data : data) {
+            minData = Math.min(minData, Data);
+        }
+        return minData;
+    }
+
+    /**
+     * This method finds the maximum in an ArrayList.
+     * @param data ArrayList<Double>
+     * @return the maximum in data
+     * */
+    public static double getMaxData(ArrayList<Double> data) {
+        double maxData = Double.MIN_VALUE;
+        for (Double Data : data) {
+            maxData = Math.max(maxData, Data);
+        }
+        return maxData;
     }
 }

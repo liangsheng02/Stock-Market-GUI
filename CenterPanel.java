@@ -163,7 +163,7 @@ public class CenterPanel extends JPanel {
         EndMonthCombo.addItemListener(dateComboListener2);
         EndYearCombo.addItemListener(dateComboListener2);
 
-        //Add StockCombo
+        //Add StockCombo, add 4 ticker symbols for example,
         StockCombo = new JComboBox();
         StockCombo.setForeground(new Color(-12828863));
         final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();

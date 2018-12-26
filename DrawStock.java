@@ -1,5 +1,6 @@
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,8 +34,10 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     private Color backgroundColor = new Color(174, 176, 178, 180);
     private Color pointColor = new Color(60, 63, 65, 180);
     private Color gridColor = new Color(136, 138, 141, 200);
-    private Color lineColor = new Color(62, 133, 158, 180);
-    private Color dottedColor = new Color(97, 155, 158, 180);
+    private Color lineColor = new Color(62, 133, 158, 120);
+    private Color riseColor = new Color(0, 255, 0, 180);
+    private Color fallColor = new Color(255, 0, 0, 180);
+    private Color dottedColor = new Color(97, 155, 158, 80);
     private Color stringColor = new Color(97, 155, 158, 180);
     private Color labelColor = new Color(97, 155, 158, 180);
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
@@ -52,22 +55,8 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     private Point nearestY;
     private String textX;
     private String textY;
-
-    private double getMinData() {
-        double minData = Double.MAX_VALUE;
-        for (Double Data : data) {
-            minData = Math.min(minData, Data);
-        }
-        return minData;
-    }
-
-    private double getMaxData() {
-        double maxData = Double.MIN_VALUE;
-        for (Double Data : data) {
-            maxData = Math.max(maxData, Data);
-        }
-        return maxData;
-    }
+    private Double min;
+    private Double max;
 
     /**
      * This method finds the nearest point by x axis.
@@ -85,8 +74,15 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         return nearestP;
     }
 
-    public void setdata(ArrayList<Double> data) {
+    /**
+     * This method sends some new data to DrawStock object, and applies repaint method to redraw the line graph.
+     * @param data a different ArrayList<Double>
+     * */
+    public void setData(ArrayList<Double> data) {
         this.data = data;
+        this.max = StaticMethods.getMaxData(this.data);
+        this.min = StaticMethods.getMinData(this.data);
+        this.nearestP=this.nearestX=this.nearestY= new Point(0,0);
         invalidate();
         this.repaint();
     }
@@ -99,6 +95,8 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     public DrawStock(ArrayList<Double> data, ArrayList<String> date) {
         this.data = data;
         this.date = date;
+        this.max = StaticMethods.getMaxData(data);
+        this.min = StaticMethods.getMinData(data);
         this.addMouseMotionListener(this);
 
         //initialise the nearest point of the mouse.
@@ -116,15 +114,15 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         //create graphPoints ArrayList to store data points;
-        xScale = ((double) getWidth() - 2 * pad - labelPad) / (data.size() - 1);
-        yScale = ((double) getHeight() - 2 * pad - labelPad) / (getMaxData() - getMinData());
+        xScale = ((double) getWidth() - 2*pad - labelPad) / (data.size() - 1);
+        yScale = ((double) getHeight()- 2*pad - labelPad) / (max - min);
         graphPoints = new ArrayList<>();
         Iterator dataIterator = data.iterator();
         i = 0;
         while (dataIterator.hasNext()) {
             Double d = (Double) dataIterator.next();
             int x1 = (int) (i * xScale + pad + labelPad);
-            int y1 = (int) ((getMaxData() - d) * yScale + pad);
+            int y1 = (int) ((StaticMethods.getMaxData(data) - d) * yScale + pad);
             graphPoints.add(new Point(x1, y1));
             i++;
         }
@@ -149,7 +147,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
                 g2.setColor(gridColor);
                 g2.drawLine(pad + labelPad + 1 + pointWidth, y0, getWidth() - pad, y0);
                 g2.setColor(labelColor);
-                String yLabel = ((int) ((getMinData() + (getMaxData() - getMinData()) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
+                String yLabel = ((int) ((min + (max - min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
@@ -157,14 +155,28 @@ public class DrawStock extends JPanel implements MouseMotionListener {
             }
         }
 
-        //draw lines graph
+        //draw lines graph and charts
         oldStroke = g2.getStroke();
-        g2.setColor(lineColor);
         g2.setStroke(GRAPH_STROKE);
         i = 0;
         while (i < graphPoints.size() - 1) {
+            //draw lines!
+            g2.setColor(lineColor);
             g2.drawLine(graphPoints.get(i).x, graphPoints.get(i).y,
-                    graphPoints.get(i + 1).x, graphPoints.get(i + 1).y);//draw lines!
+                    graphPoints.get(i+1).x, graphPoints.get(i+1).y);
+            //draw charts!
+            if (graphPoints.get(i).y - graphPoints.get(i+1).y >= 0) {//raise
+                g2.setColor(riseColor);
+                g2.fillRect(graphPoints.get(i).x, graphPoints.get(i+1).y,
+                        graphPoints.get(i+1).x - graphPoints.get(i).x,
+                        graphPoints.get(i).y - graphPoints.get(i+1).y);
+            }
+            else{//fall
+                g2.setColor(fallColor);
+                g2.fillRect(graphPoints.get(i).x, graphPoints.get(i).y,
+                        graphPoints.get(i+1).x - graphPoints.get(i).x,
+                        graphPoints.get(i+1).y - graphPoints.get(i).y);
+            }
             i++;
         }//can't use Iterator here because it has to get the i+1 element
 
