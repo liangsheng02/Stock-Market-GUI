@@ -3,13 +3,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * This Class retrieves stock data by URL and store them as a StockData object.
  * The StockData object contains the ticker symbol, and an ArrayList of the stock data during a period.
- * Each element of the stock data ArrayList is a StockEachDay object, which contains 6 params.
+ * Each element of the stock data ArrayList is a StockEachDay object, which contains 6 attributes.
  * @author Sheng Liang
  */
 public class DataRetriever {
@@ -29,7 +31,7 @@ public class DataRetriever {
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
         connection.setRequestMethod("GET");
         int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) { // success
+        if (responseCode == HttpURLConnection.HTTP_OK) {// success
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String eachLine = reader.readLine();
             boolean flag = false;
@@ -37,7 +39,9 @@ public class DataRetriever {
                 if (flag == true){//Use a flag to skip the first line
                     String Each[] = eachLine.split(",");
                     StockEachDay eachDay = new StockEachDay(Each[0], Each[1], Each[2], Each[3], Each[4], Each[5]);
-                    StockList.add(eachDay);
+                    if(Each[0] != null){//missed date is not allowed, other missing data would be handled in StockEachDay.
+                        StockList.add(eachDay);
+                    }
                 }
                 else{
                     flag = true;
@@ -57,13 +61,24 @@ public class DataRetriever {
     /**
      * Constructor, input the three params of a stock to get its full URL.
      * @param ticker_symbol String such as "FB"
-     * @param startDate date such as 01/01/2019
-     * @param endDate date such as 01/01/2019
+     * @param startDate String date such as 01/01/2019
+     * @param endDate String date such as 01/01/2019
      */
     public DataRetriever(String ticker_symbol, String startDate, String endDate) {
+        int num = 0;//max num_rows that allow to download.
+        try {
+            Date start = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
+            Date end = new SimpleDateFormat("MM/dd/yyyy").parse(endDate);
+            num = (int) ((end.getTime() - start.getTime()) / (1000*3600*24));//convert ms to day
+        }
+        catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
         this.ticker_symbol = ticker_symbol;
         this.URL = "https://quotes.wsj.com/" + ticker_symbol
-                + "/historical-prices/download?MOD_VIEW=page&num_rows=2000&startDate="
+                + "/historical-prices/download?MOD_VIEW=page&num_rows=" +
+                + num
+                + "&startDate="
                 + startDate + "&endDate=" + endDate;
     }
 

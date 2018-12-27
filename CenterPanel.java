@@ -38,10 +38,10 @@ public class CenterPanel extends JPanel {
      */
     public JLabel setLabel(String labelText, String font, int style, int size) {
         JLabel label = new JLabel();
-        label.setBackground(new Color(-4539718));
+        label.setBackground(StaticMethods.stringColor);
         Font labelFont = StaticMethods.getFont(font, style, size, label.getFont());
         if (labelFont != null) label.setFont(labelFont);
-        label.setForeground(new Color(-4539718));
+        label.setForeground(StaticMethods.stringColor);
         label.setText(labelText);
         return label;
     }
@@ -51,7 +51,7 @@ public class CenterPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         GradientPaint gradientPaint =new GradientPaint(0, 0,
-                StaticMethods.backgroundColor, 0, getWidth(), StaticMethods.stringColor,false);
+                StaticMethods.backgroundColor, 0, getHeight(), StaticMethods.gradientColor,false);
         g2.setPaint(gradientPaint);
         g2.fillRect(0, 0, getWidth(), getHeight());
     }
@@ -72,7 +72,7 @@ public class CenterPanel extends JPanel {
                 Object objEY = EndYearCombo.getSelectedItem();
                 Object objED = EndDayCombo.getSelectedItem();
                 if (objStock != null && objSM != null && objSY != null && objSD != null
-                        && objEM != null && objEY != null && objED != null) {
+                        && objEM != null && objEY != null && objED != null) {//if all ComboBoxes not empty
                     String choStock = objStock.toString();
                     String choStartDate = objSM.toString() + "/" + objSD.toString() + "/" + objSY.toString();
                     String choEndDate = objEM.toString() + "/" + objED.toString() + "/" + objEY.toString();
@@ -82,21 +82,27 @@ public class CenterPanel extends JPanel {
                         choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);//(1/7/2018->01/07/2018)
                         choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
                         Date today = new Date();
-                        if (end.after(today)) { //Error1 "End Date Error: Later Than Today."
+                        if (end.after(today)) {//Error1 "End Date Error: Later Than Today."
                             ErrorStatus = 1;
-                        } else if (!start.before(end)) { // Error2 "Start Date Error: Not Before End Date."
+                        } else if (!start.before(end)) {// Error2 "Start Date Error: Not Before End Date."
                             ErrorStatus = 2;
-                        } else { //OK
-                            ErrorStatus = 0;
+                        } else {//get stock data
                             DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
                             stockData = dr.getStockData();
+                            if (stockData.getCloseList().size() <= 1){//Error4 "Don't Have Enough Data"
+                                ErrorStatus = 4;
+                            }
+                            else{//OK!
+                                ErrorStatus = 0;
+                            }
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace(System.err);
                     }
-                } else { //Error3 "Please Select Stock, Start Date and End Date."
+                } else {//Error3 "Please Select Stock, Start Date and End Date."
                     ErrorStatus = 3;
                 }
+                //execute getMessage method in gui to display corresponding message.
                 gui.getMessage(ErrorStatus);
             }
         }
@@ -127,18 +133,17 @@ public class CenterPanel extends JPanel {
 
     /**
      * Constructor, add components to the CenterPanel.
+     * In this Panel it has 7 JComboBoxes, 6 JLabels and one JButton.
      * @param gui MarketGUI object
      */
     public CenterPanel(MarketGUI gui) {
         this.gui = gui;
         this.setLayout(new GridBagLayout());
-        this.setBackground(new Color(-12828863));
         Font CenterPanelFont = StaticMethods.getFont("Arial", -1, -1, this.getFont());
         if (CenterPanelFont != null) {
             this.setFont(CenterPanelFont);
         }
-        this.setForeground(new Color(-4539718));
-        this.setInheritsPopupMenu(false);
+        this.setForeground(StaticMethods.stringColor);
 
         //Add StartMonthCombo
         StartMonthCombo = new JComboBox();
@@ -147,12 +152,12 @@ public class CenterPanel extends JPanel {
         this.add(StartMonthCombo, gbc);
         //Add StartDayCombo
         StartDayCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
         gbc.ipadx = 0;
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
         StartYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 7); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
         EndMonthCombo = new JComboBox();
@@ -160,14 +165,14 @@ public class CenterPanel extends JPanel {
         this.add(EndMonthCombo, gbc);
         //Add EndDayCombo
         EndDayCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,2, 2, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,2, 2, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
         EndYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 7); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
 
-        //initialise the three combo boxes, and add ItemListeners to Month and Year.
+        //to control the Day items, initialise the three combo boxes, and add ItemListeners to Month and Year.
         AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
         AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
         DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
@@ -177,16 +182,16 @@ public class CenterPanel extends JPanel {
         EndMonthCombo.addItemListener(dateComboListener2);
         EndYearCombo.addItemListener(dateComboListener2);
 
-        //Add StockCombo, add 4 ticker symbols for example,
+        //Add StockCombo, add 4 ticker symbols for example
         StockCombo = new JComboBox();
-        StockCombo.setForeground(new Color(-12828863));
+        StockCombo.setForeground(Color.BLACK);
         final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
         defaultComboBoxModel.addElement("AAPL");
         defaultComboBoxModel.addElement("FB");
         defaultComboBoxModel.addElement("GOOG");
         defaultComboBoxModel.addElement("YHOO");
         StockCombo.setModel(defaultComboBoxModel);
-        gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 10 ,0, 10);//anchor: WEST, fill: HORIZONTAL
+        gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 12 ,0, 8);//anchor: WEST, fill: HORIZONTAL
         this.add(StockCombo, gbc);
 
         //Add label "Start Date :"
@@ -203,7 +208,7 @@ public class CenterPanel extends JPanel {
         this.add(label3, gbc);
         //Add label "Day"
         final JLabel label4 = setLabel("Day","Arial Black",-1,-1);
-        gbc = StaticMethods.setGbc(gbc,2, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,2, 0, 17, 1, 0, 12 ,0, 0);//anchor: WEST, fill: BOTH
         this.add(label4, gbc);
         //Add label "Year"
         final JLabel label5 = setLabel("Year","Arial Black",-1,-1);
@@ -217,14 +222,14 @@ public class CenterPanel extends JPanel {
 
         //Add GoButton
         GoButton = new JButton();
-        GoButton.setBackground(new Color(-12828863));
+        GoButton.setBackground(StaticMethods.backgroundColor);
         Font GoButtonFont = StaticMethods.getFont("Arial Black", -1, -1, GoButton.getFont());
         if (GoButtonFont != null) {
             GoButton.setFont(GoButtonFont);
         }
-        GoButton.setForeground(new Color(-4539718));
-        GoButton.setText("Go !");
-        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 1, 10,10,0,10);//anchor: West, fill: BOTH
+        GoButton.setForeground(StaticMethods.stringColor);
+        GoButton.setText("Go!");
+        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 1, 10,10,0,15);//anchor: West, fill: BOTH
         this.add(GoButton, gbc);
         GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
     }

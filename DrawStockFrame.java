@@ -13,24 +13,20 @@ import javax.swing.*;
  * */
 public class DrawStockFrame extends JFrame implements ActionListener {
 
-    private Color backgroundColor = new Color(60, 63, 65, 255);
-    private Color stringColor = new Color(186, 186, 186, 180);
-    private Color riseColor = new Color(0, 255, 0, 180);
-    private Color fallColor = new Color(255, 0, 0, 180);
     private String labelText;
-    private Double Close0;
-    private Double Close1;
+    private Double Close0; //the Close of the stock on Start Day
+    private Double Close1; //the Close of the stock on End Day
     private DrawStock drawStock;
     private StockData stockData;
-
-
 
     /**
      * Constructor, add a DrawStock JPanel and a columnOfButtons JPanel on the Frame.
      * @param stockData StockData object
      * */
     public DrawStockFrame(StockData stockData) {
+
         this.stockData = stockData;
+        this.setTitle("Stock Chart");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -40,36 +36,38 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         drawStock = new DrawStock(this.stockData.getCloseList(), this.stockData.getDateList());
         contentPane.add(drawStock, BorderLayout.CENTER);
 
-        //Create a column of buttons and one label using GridLayout in an ordinary JPanel on the EAST side.
-        JPanel columnOfButtons = new JPanel(new GridLayout(7,1,0,20));
-        columnOfButtons.setBackground(backgroundColor);
+        //Create a label to show the stock's ticker_symbol.
         JLabel ticker_symbol = new JLabel("",JLabel.CENTER);
         Font labelFont = StaticMethods.getFont("Arial Black", -1, 16, ticker_symbol.getFont());
         if (labelFont != null) {ticker_symbol.setFont(labelFont);}
-        Close0 = stockData.getCloseList().get(0);
-        Close1 = stockData.getCloseList().get(stockData.getCloseList().size()-1);
+        this.Close0 = stockData.getCloseList().get(0);
+        this.Close1 = stockData.getCloseList().get(stockData.getCloseList().size()-1);
+
         //if the stock falls, use rad color and "-" on the label. Use HTML to change line.
         if (Close0 > Close1) {
             labelText = "<html><body><p align=\"center\">" + stockData.getTicker_symbol() + "<br/>"
                     + "-" + String.format("%.2f",Close0-Close1) + "</p></body></html>";
-            ticker_symbol.setForeground(fallColor);
+            ticker_symbol.setForeground(StaticMethods.fallColor);
         }
         //if the stock rises, use green and "+".
         else{
             labelText = "<html><body><p align=\"center\">" + stockData.getTicker_symbol() + "<br/>"
                     + "+" + String.format("%.2f",Close1-Close0) + "</p></body></html>";
-            ticker_symbol.setForeground(riseColor);
-
+            ticker_symbol.setForeground(StaticMethods.riseColor);
         }
         ticker_symbol.setText(labelText);
-        //add buttons
+
+        //add buttons and label to a JPanel columnOfButtons
+        JPanel columnOfButtons = new JPanel(new GridLayout(8,1,0,20));
+        columnOfButtons.setBackground(StaticMethods.backgroundColor);
+        columnOfButtons.add(new Label());//add empty label to get an empty place
         columnOfButtons.add(ticker_symbol);
         makeButton(columnOfButtons, "Open", this);
         makeButton(columnOfButtons, "Close", this);
         makeButton(columnOfButtons, "High", this);
         makeButton(columnOfButtons, "Low", this);
         makeButton(columnOfButtons, "Volume", this);
-        makeButton(columnOfButtons, "Quit", this);
+        columnOfButtons.add(new Label());//add empty label to get an empty place
         contentPane.add(columnOfButtons, BorderLayout.EAST);
     }
 
@@ -81,10 +79,10 @@ public class DrawStockFrame extends JFrame implements ActionListener {
      * */
     private void makeButton(JPanel p, String name, ActionListener target) {
         JButton b = new JButton(name);
-        b.setBackground(backgroundColor);
+        b.setBackground(StaticMethods.backgroundColor);
         Font f = StaticMethods.getFont("Arial Black", -1, -1, this.getFont());
         if (f != null){b.setFont(f);}
-        b.setForeground(stringColor);
+        b.setForeground(StaticMethods.stringColor);
         // add it to the specified JPanel and make the JPanel listen
         p.add(b);
         b.addActionListener(target);
@@ -98,10 +96,7 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         // Do the appropriate thing depending on which button is pressed.
         // Use the getActionCommand() method to identify the button.
         String command = e.getActionCommand();
-        if (command.equals("Quit")) {
-            System.exit(0);
-        }
-        else if (command.equals("Open")) {
+        if (command.equals("Open")) {
             drawStock.setData(stockData.getOpenList());
         }
         else if (command.equals("Close")) {

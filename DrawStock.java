@@ -30,14 +30,9 @@ import java.util.Iterator;
 public class DrawStock extends JPanel implements MouseMotionListener, MouseListener {
 
     private Color graphColor = new Color(38, 41, 43, 255);
-    private Color backgroundColor = new Color(60, 63, 65, 255);
     private Color pointColor = new Color(186, 186, 186, 180);
     private Color gridColor = new Color(136, 138, 141, 200);
     private Color lineColor = new Color(186, 186, 186, 120);
-    private Color riseColor = new Color(0, 255, 0, 120);
-    private Color fallColor = new Color(255, 0, 0, 120);
-    private Color dottedColor = new Color(186, 186, 186, 80);
-    private Color stringColor = new Color(186, 186, 186, 180);
     private Graphics2D g2;
     private Stroke GRAPH_STROKE = new BasicStroke(2f);
     private Stroke oldStroke;
@@ -100,7 +95,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
         this.min = StaticMethods.getMinData(data);
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
-        this.setBackground(backgroundColor);
+        this.setBackground(StaticMethods.backgroundColor);
 
         //initialise the nearest point of the mouse.
         this.nearestP=this.nearestX=this.nearestY= new Point(0,0);
@@ -135,7 +130,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
         g2.fillRect(pad + labelPad, pad,getWidth() - 2*pad - labelPad,getHeight() - 2*pad - labelPad);
 
         //draw x and y boundaries
-        g2.setColor(stringColor);
+        g2.setColor(StaticMethods.stringColor);
         g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
                 pad + labelPad, pad);
         g2.drawLine(getWidth() - pad, getHeight() - pad - labelPad,
@@ -151,7 +146,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
             if (data.size() > 0) {
                 g2.setColor(gridColor);
                 g2.drawLine(pad + labelPad, y0, getWidth() - pad, y0);
-                g2.setColor(stringColor);
+                g2.setColor(StaticMethods.stringColor);
                 String yLabel = ((int) ((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
@@ -171,13 +166,13 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
                     graphPoints.get(i+1).x, graphPoints.get(i+1).y);
             //draw bars!
             if (graphPoints.get(i).y - graphPoints.get(i+1).y >= 0) {//raise
-                g2.setColor(riseColor);
+                g2.setColor(StaticMethods.riseColor);
                 g2.fillRect(graphPoints.get(i).x, graphPoints.get(i+1).y,
                         graphPoints.get(i+1).x - graphPoints.get(i).x,
                         graphPoints.get(i).y - graphPoints.get(i+1).y);
             }
             else{//fall
-                g2.setColor(fallColor);
+                g2.setColor(StaticMethods.fallColor);
                 g2.fillRect(graphPoints.get(i).x, graphPoints.get(i).y,
                         graphPoints.get(i+1).x - graphPoints.get(i).x,
                         graphPoints.get(i+1).y - graphPoints.get(i).y);
@@ -188,7 +183,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
         //if user moves the mouse, nearestP would be updated to >0, then redraw the graph.
         if(this.nearestP.x != 0){
             //draw strings
-            g2.setColor(stringColor);
+            g2.setColor(StaticMethods.stringColor);
             g2.drawString(textX, this.nearestX.x-23, this.nearestX.y + g2.getFontMetrics().getHeight());//x axis label
             g2.drawString(textY, this.nearestY.x, this.nearestY.y);//y axis label
             //draw points
@@ -196,7 +191,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
             g2.setColor(pointColor);
             g2.fillOval(nearestP.x - pointWidth / 2, nearestP.y - pointWidth / 2, pointWidth, pointWidth);
             //draw dotted lines
-            g2.setColor(dottedColor);
+            g2.setColor(lineColor);
             g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,0, new float[]{8,12},0));
             g2.drawLine(this.nearestX.x, this.nearestX.y, this.nearestP.x, this.nearestP.y);//to x axis
             g2.drawLine(this.nearestY.x, this.nearestY.y, this.nearestP.x, this.nearestP.y);//to y axis

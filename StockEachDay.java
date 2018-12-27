@@ -1,6 +1,7 @@
 /**
  * This Class is used to store the six stock params (String) of each day.
  * They can be read into String/Double type by the getters.
+ * In case some data is missing, the getters would replace missing data with zero.
  * @author Sheng Liang
  */
 public class StockEachDay {
@@ -16,18 +17,33 @@ public class StockEachDay {
         return Date;
     }
     public double getOpen() {
+        if (Open == null){
+            Open = 0 + "";
+        }
         return Double.parseDouble(Open);
     }
     public double getHigh() {
+        if (High == null){
+            High = 0 + "";
+        }
         return Double.parseDouble(High);
     }
     public double getLow() {
+        if (Low == null){
+            Low = 0 + "";
+        }
         return Double.parseDouble(Low);
     }
     public double getClose() {
+        if (Close == null){
+            Close = 0 + "";
+        }
         return Double.parseDouble(Close);
     }
     public double getVolume() {
+        if (Volume == null){
+            Volume = 0 + "";
+        }
         return Double.parseDouble(Volume);
     }
 
