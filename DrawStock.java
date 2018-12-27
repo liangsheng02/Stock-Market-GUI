@@ -1,6 +1,6 @@
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,7 +17,8 @@ import java.awt.Dimension;
 import java.util.Iterator;
 
 /**
- * This class is a panel that draws line graph for the the input ArrayList.
+ * This class is a panel that draws graph for the the input ArrayList.
+ * The graph is built by lines that connect every two points, and green/red bars that show the rise/fall.
  * If user moves the mouse in the panel, the nearest point would be highlighted,
  * and the details of the data point would be showed on the line graph.
  * (Actually, a resource-saving way to do this is applying JLayeredPane in the JFrame,
@@ -26,12 +27,9 @@ import java.util.Iterator;
  *  But I think it is not very necessary in this little project.)
  * @author Sheng Liang
  */
-public class DrawStock extends JPanel implements MouseMotionListener {
+public class DrawStock extends JPanel implements MouseMotionListener, MouseListener {
 
-    private Graphics2D g2;
-    private int pad = 30;
-    private int labelPad = 20;
-    private Color grapColor = new Color(38, 41, 43, 255);
+    private Color graphColor = new Color(38, 41, 43, 255);
     private Color backgroundColor = new Color(60, 63, 65, 255);
     private Color pointColor = new Color(186, 186, 186, 180);
     private Color gridColor = new Color(136, 138, 141, 200);
@@ -40,24 +38,26 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     private Color fallColor = new Color(255, 0, 0, 120);
     private Color dottedColor = new Color(186, 186, 186, 80);
     private Color stringColor = new Color(186, 186, 186, 180);
-    private Color labelColor = new Color(186, 186, 186, 180);
-    private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
+    private Graphics2D g2;
+    private Stroke GRAPH_STROKE = new BasicStroke(2f);
+    private Stroke oldStroke;
+    private int pad = 30;
+    private int labelPad = 20;
     private int pointWidth = 8;
     private int yDivision = 10;
-    private ArrayList<Double> data;
-    private ArrayList<String> date;
-    private ArrayList<Point> graphPoints;
-    private Stroke oldStroke;
     private int i ;
     private Double xScale;
     private Double yScale;
+    private Double min;
+    private Double max;
+    private ArrayList<Double> data;
+    private ArrayList<String> date;
+    private ArrayList<Point> graphPoints;
     private Point nearestP;
     private Point nearestX;
     private Point nearestY;
     private String textX;
     private String textY;
-    private Double min;
-    private Double max;
 
     /**
      * This method finds the nearest point by x axis.
@@ -99,6 +99,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         this.max = StaticMethods.getMaxData(data);
         this.min = StaticMethods.getMinData(data);
         this.addMouseMotionListener(this);
+        this.addMouseListener(this);
         this.setBackground(backgroundColor);
 
         //initialise the nearest point of the mouse.
@@ -130,11 +131,11 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         }
 
         //draw background
-        g2.setColor(grapColor);
+        g2.setColor(graphColor);
         g2.fillRect(pad + labelPad, pad,getWidth() - 2*pad - labelPad,getHeight() - 2*pad - labelPad);
 
         //draw x and y boundaries
-        g2.setColor(labelColor);
+        g2.setColor(stringColor);
         g2.drawLine(pad + labelPad, getHeight() - pad - labelPad,
                 pad + labelPad, pad);
         g2.drawLine(getWidth() - pad, getHeight() - pad - labelPad,
@@ -150,7 +151,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
             if (data.size() > 0) {
                 g2.setColor(gridColor);
                 g2.drawLine(pad + labelPad, y0, getWidth() - pad, y0);
-                g2.setColor(labelColor);
+                g2.setColor(stringColor);
                 String yLabel = ((int) ((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
@@ -159,7 +160,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
             }
         }
 
-        //draw lines graph and charts
+        //draw lines graph and bars
         oldStroke = g2.getStroke();
         g2.setStroke(GRAPH_STROKE);
         i = 0;
@@ -168,7 +169,7 @@ public class DrawStock extends JPanel implements MouseMotionListener {
             g2.setColor(lineColor);
             g2.drawLine(graphPoints.get(i).x, graphPoints.get(i).y,
                     graphPoints.get(i+1).x, graphPoints.get(i+1).y);
-            //draw charts!
+            //draw bars!
             if (graphPoints.get(i).y - graphPoints.get(i+1).y >= 0) {//raise
                 g2.setColor(riseColor);
                 g2.fillRect(graphPoints.get(i).x, graphPoints.get(i+1).y,
@@ -203,14 +204,14 @@ public class DrawStock extends JPanel implements MouseMotionListener {
     }
 
     /**
-     * Implementation of the MouseMotionListener.
+     * Implements the MouseMotionListener.
      * Apply repaint method to redraw the graph when user moves the mouse.
      * */
     @Override
     public void mouseDragged(MouseEvent e) {}//do nothing!
     @Override
     public void mouseMoved(MouseEvent e) {
-        Graphics g = this.getGraphics();nearestP = getNearest(e.getX());
+        nearestP = getNearest(e.getX());
         i = graphPoints.indexOf(nearestP);
         textY = data.get(i) + "";
         textX = date.get(i) + "";
@@ -218,6 +219,26 @@ public class DrawStock extends JPanel implements MouseMotionListener {
         nearestY = new Point(pad + labelPad, nearestP.y);
         this.repaint();
     }
+    /**
+     * Implements the MouseListener.
+     * Apply repaint method to redraw the graph when user'mouse exit.
+     * */
+    @Override
+    public void mouseClicked(MouseEvent e) {}//do nothing!
+    @Override
+    public void mousePressed(MouseEvent e) {}//do nothing!
+    @Override
+    public void mouseReleased(MouseEvent e) {}//do nothing!
+    @Override
+    public void mouseEntered(MouseEvent e) {}//do nothing!
+    @Override
+    public void mouseExited(MouseEvent e) {
+        this.nearestP=this.nearestX=this.nearestY= new Point(0,0);
+        invalidate();
+        this.repaint();
+    }
+
+
 
     /**
      * Main method for testing

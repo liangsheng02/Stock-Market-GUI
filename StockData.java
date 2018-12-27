@@ -93,5 +93,4 @@ public class StockData {
         this.StockList = StockList;
         this.ticker_symbol = ticker_symbol;
     }
-
 }

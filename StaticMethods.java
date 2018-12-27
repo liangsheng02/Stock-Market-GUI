@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class StaticMethods {
 
     /**
-     * This method is used to set font.
+     * This method is used to get a font.
      * @param fontName
      * @param style
      * @param size
@@ -78,4 +78,14 @@ public class StaticMethods {
         }
         return maxData;
     }
+
+    public static Color graphColor = new Color(38, 41, 43, 255);
+    public static Color backgroundColor = new Color(60, 63, 65, 255);
+    public static Color pointColor = new Color(186, 186, 186, 180);
+    public static Color gridColor = new Color(136, 138, 141, 200);
+    public static Color lineColor = new Color(186, 186, 186, 120);
+    public static Color riseColor = new Color(0, 255, 0, 120);
+    public static Color fallColor = new Color(255, 0, 0, 120);
+    public static Color dottedColor = new Color(186, 186, 186, 80);
+    public static Color stringColor = new Color(186, 186, 186, 180);
 }

@@ -46,6 +46,16 @@ public class CenterPanel extends JPanel {
         return label;
     }
 
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        GradientPaint gradientPaint =new GradientPaint(0, 0,
+                StaticMethods.backgroundColor, 0, getWidth(), StaticMethods.stringColor,false);
+        g2.setPaint(gradientPaint);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+    }
+
     /**
      * This class creates ActionListener for GoButton, to check whether the dates are legal, and change ErrorStatus.
      * */
@@ -113,6 +123,8 @@ public class CenterPanel extends JPanel {
         }
     }
 
+
+
     /**
      * Constructor, add components to the CenterPanel.
      * @param gui MarketGUI object
@@ -131,29 +143,31 @@ public class CenterPanel extends JPanel {
         //Add StartMonthCombo
         StartMonthCombo = new JComboBox();
         gbc = StaticMethods.setGbc(null,1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
+        gbc.ipadx = 20;
         this.add(StartMonthCombo, gbc);
         //Add StartDayCombo
         StartDayCombo = new JComboBox();
         gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc.ipadx = 0;
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
         StartYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
         EndMonthCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,1, 2, 17, 2, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,1, 2, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         this.add(EndMonthCombo, gbc);
         //Add EndDayCombo
         EndDayCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,2, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,2, 2, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
         EndYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 2, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 10); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
 
-        //initialise the three combo boxes, and add ItemListener to Month and Year.
+        //initialise the three combo boxes, and add ItemListeners to Month and Year.
         AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
         AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
         DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
@@ -210,7 +224,7 @@ public class CenterPanel extends JPanel {
         }
         GoButton.setForeground(new Color(-4539718));
         GoButton.setText("Go !");
-        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 2, 10,10,0,10);//anchor: None, fill: HORIZONTAL
+        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 1, 10,10,0,10);//anchor: West, fill: BOTH
         this.add(GoButton, gbc);
         GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
     }

@@ -13,15 +13,16 @@ import javax.swing.*;
  * */
 public class DrawStockFrame extends JFrame implements ActionListener {
 
-    private DrawStock drawStock;
-    private StockData stockData;
-    private String labelText;
-    private Double Close0;
-    private Double Close1;
     private Color backgroundColor = new Color(60, 63, 65, 255);
     private Color stringColor = new Color(186, 186, 186, 180);
     private Color riseColor = new Color(0, 255, 0, 180);
     private Color fallColor = new Color(255, 0, 0, 180);
+    private String labelText;
+    private Double Close0;
+    private Double Close1;
+    private DrawStock drawStock;
+    private StockData stockData;
+
 
 
     /**
@@ -40,7 +41,7 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         contentPane.add(drawStock, BorderLayout.CENTER);
 
         //Create a column of buttons and one label using GridLayout in an ordinary JPanel on the EAST side.
-        JPanel columnOfButtons = new JPanel(new GridLayout(7,1,0,10));
+        JPanel columnOfButtons = new JPanel(new GridLayout(7,1,0,20));
         columnOfButtons.setBackground(backgroundColor);
         JLabel ticker_symbol = new JLabel("",JLabel.CENTER);
         Font labelFont = StaticMethods.getFont("Arial Black", -1, 16, ticker_symbol.getFont());
