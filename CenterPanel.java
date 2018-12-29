@@ -157,7 +157,7 @@ public class CenterPanel extends JPanel {
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
         StartYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 7); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
         EndMonthCombo = new JComboBox();
@@ -169,7 +169,7 @@ public class CenterPanel extends JPanel {
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
         EndYearCombo = new JComboBox();
-        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 7); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
 
         //to control the Day items, initialise the three combo boxes, and add ItemListeners to Month and Year.
@@ -185,7 +185,7 @@ public class CenterPanel extends JPanel {
         //Add StockCombo, add 4 ticker symbols for example
         StockCombo = new JComboBox();
         StockCombo.setForeground(Color.BLACK);
-        final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
         defaultComboBoxModel.addElement("AAPL");
         defaultComboBoxModel.addElement("FB");
         defaultComboBoxModel.addElement("GOOG");
@@ -195,27 +195,27 @@ public class CenterPanel extends JPanel {
         this.add(StockCombo, gbc);
 
         //Add label "Start Date :"
-        final JLabel label1 = setLabel("Start Date :","Arial Black",-1,-1);
+        JLabel label1 = setLabel("Start Date :","Arial Black",-1,-1);
         gbc = StaticMethods.setGbc(gbc,0, 1, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
         this.add(label1, gbc);
         //Add label "End Date   :"
-        final JLabel label2 = setLabel("End Date   :","Arial Black",-1,-1);
+        JLabel label2 = setLabel("End Date   :","Arial Black",-1,-1);
         gbc = StaticMethods.setGbc(gbc,0, 2, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
         this.add(label2, gbc);
         //Add label "Month"
-        final JLabel label3 = setLabel("Month","Arial Black",-1,-1);
+        JLabel label3 = setLabel("Month","Arial Black",-1,-1);
         gbc = StaticMethods.setGbc(gbc,1, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
         this.add(label3, gbc);
         //Add label "Day"
-        final JLabel label4 = setLabel("Day","Arial Black",-1,-1);
+        JLabel label4 = setLabel("Day","Arial Black",-1,-1);
         gbc = StaticMethods.setGbc(gbc,2, 0, 17, 1, 0, 12 ,0, 0);//anchor: WEST, fill: BOTH
         this.add(label4, gbc);
         //Add label "Year"
-        final JLabel label5 = setLabel("Year","Arial Black",-1,-1);
+        JLabel label5 = setLabel("Year","Arial Black",-1,-1);
         gbc = StaticMethods.setGbc(gbc,3, 0, 17, 1, 0, 10 ,0, 10);//anchor: WEST, fill: BOTH
         this.add(label5, gbc);
         //Add label "Find a Stock  :"
-        final JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
+        JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
         gbc = StaticMethods.setGbc(gbc,0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
         gbc.gridwidth = 2;
         this.add(label6, gbc);

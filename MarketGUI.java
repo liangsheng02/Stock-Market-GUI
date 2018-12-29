@@ -31,10 +31,12 @@ public class MarketGUI extends JFrame {
     public void getMessage(int status){
         if (status == 0){//OK
             stockData = centerPanel.getStockData();
+            //print the ticker symbol and data duration on messagePanel,
+            //the duration depends on data in the URL, is not all ways the same with input since no data on holidays.
             messagePanel.setDisplayString("Last Gotten Data : " + stockData.getTicker_symbol()
                     + " from " + stockData.getDateList().get(0)
                     + " to " + stockData.getDateList().get(stockData.getDateList().size()-1));
-            //open new window
+            //make this window unable after open a new window
             this.setEnabled(false);
             MarketGUI This=this;
             //create new window
@@ -65,11 +67,14 @@ public class MarketGUI extends JFrame {
         MainPanel = new JPanel();
         MainPanel.setLayout(new GridBagLayout());
         this.setContentPane(MainPanel);
-        MainGBC=new GridBagConstraints();
+        MainGBC = new GridBagConstraints();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
         this.setBounds((int) width/4, (int) height/4, (int) width/2, (int) height/2);
+        this.setTitle("MarketGUI");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
 
         //North: LogoPanel
         logoPanel = new LogoPanel();
@@ -95,13 +100,11 @@ public class MarketGUI extends JFrame {
         MainGBC.gridy=1;
         MainGBC.fill=GridBagConstraints.BOTH;
         MainPanel.add(centerPanel, MainGBC);
-        centerPanel.setPreferredSize(new Dimension(800, 200));
+        centerPanel.setPreferredSize(new Dimension(800, 220));
     }
 
     public static void main(String[] args) {
         MarketGUI frame = new MarketGUI();
-        frame.setTitle("MarketGUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
