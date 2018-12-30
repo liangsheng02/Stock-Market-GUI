@@ -26,7 +26,9 @@ public class DrawStockFrame extends JFrame implements ActionListener {
     public DrawStockFrame(StockData stockData) {
 
         this.stockData = stockData;
-        this.setTitle("Stock Chart");
+        this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol()
+                + " from " +this.stockData.getDateList().get(0)
+                + " to " + this.stockData.getDateList().get(this.stockData.getDateList().size()-1));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();

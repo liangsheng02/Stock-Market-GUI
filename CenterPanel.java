@@ -71,37 +71,51 @@ public class CenterPanel extends JPanel {
                 Object objEM = EndMonthCombo.getSelectedItem();
                 Object objEY = EndYearCombo.getSelectedItem();
                 Object objED = EndDayCombo.getSelectedItem();
-                if (objStock != null && objSM != null && objSY != null && objSD != null
-                        && objEM != null && objEY != null && objED != null) {//if all ComboBoxes not empty
-                    String choStock = objStock.toString();
-                    String choStartDate = objSM.toString() + "/" + objSD.toString() + "/" + objSY.toString();
-                    String choEndDate = objEM.toString() + "/" + objED.toString() + "/" + objEY.toString();
-                    try {
-                        Date start = new SimpleDateFormat("MM/dd/yyyy").parse(choStartDate);
-                        Date end = new SimpleDateFormat("MM/dd/yyyy").parse(choEndDate);
-                        choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);//(1/7/2018->01/07/2018)
-                        choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
-                        Date today = new Date();
-                        if (end.after(today)) {//Error1 "End Date Error: Later Than Today."
-                            ErrorStatus = 1;
-                        } else if (!start.before(end)) {// Error2 "Start Date Error: Not Before End Date."
-                            ErrorStatus = 2;
-                        } else {//get stock data
-                            DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
-                            stockData = dr.getStockData();
-                            if (stockData.getCloseList().size() <= 1){//Error4 "Don't Have Enough Data"
+                if (gui.getStockLog().size() < 3){
+                    if (objStock != null && objSM != null && objSY != null && objSD != null
+                            && objEM != null && objEY != null && objED != null) {//if all ComboBoxes not empty
+                        String choStock = objStock.toString();
+                        String choStartDate = objSM.toString() + "/" + objSD.toString() + "/" + objSY.toString();
+                        String choEndDate = objEM.toString() + "/" + objED.toString() + "/" + objEY.toString();
+                        try {
+                            Date start = new SimpleDateFormat("MM/dd/yyyy").parse(choStartDate);
+                            Date end = new SimpleDateFormat("MM/dd/yyyy").parse(choEndDate);
+                            choStartDate = new SimpleDateFormat("MM/dd/yyyy").format(start);//(1/7/2018->01/07/2018)
+                            choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
+                            Date today = new Date();
+                            if (end.after(today)){//Error3 "End Date Error: Later Than Today."
+                                ErrorStatus = 3;
+                            }else if (!start.before(end)){//Error4 "Start Date Error: Not Before End Date."
                                 ErrorStatus = 4;
+                            }else {//get stock data
+                                DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
+                                stockData = dr.getStockData();
+                                if (stockData.getCloseList().size() == 0){//Error5 "Don't Have Any Data."
+                                    ErrorStatus = 5;
+                                }else if (stockData.getCloseList().size() == 1){//Error6 "Only Have One Data Point, Not Enough For A Graph."
+                                    ErrorStatus = 6;
+                                }
+                                else if (gui.getStockLog().contains(stockData.getTicker_symbol()
+                                        + " from " + stockData.getDateList().get(0)
+                                        + "to" + stockData.getDateList().get(stockData.getDateList().size()-1))){
+                                    //Error7 "You Have Gotten The Same Data."
+                                    ErrorStatus = 7;
+                                }
+                                else{//OK!
+                                    ErrorStatus = 0;
+                                }
                             }
-                            else{//OK!
-                                ErrorStatus = 0;
-                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace(System.err);
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace(System.err);
+                    }else {//Error2 "Please Select Stock, Start Date and End Date."
+                        ErrorStatus = 2;
                     }
-                } else {//Error3 "Please Select Stock, Start Date and End Date."
-                    ErrorStatus = 3;
+                }else{//Error1 "Opened Too Many Windows."
+                    ErrorStatus = 1;
                 }
+
+
                 //execute getMessage method in gui to display corresponding message.
                 gui.getMessage(ErrorStatus);
             }
@@ -128,8 +142,6 @@ public class CenterPanel extends JPanel {
             Day.addItem(j + 1);
         }
     }
-
-
 
     /**
      * Constructor, add components to the CenterPanel.
@@ -182,14 +194,13 @@ public class CenterPanel extends JPanel {
         EndMonthCombo.addItemListener(dateComboListener2);
         EndYearCombo.addItemListener(dateComboListener2);
 
-        //Add StockCombo, add 4 ticker symbols for example
+        //Add StockCombo, add 3 ticker symbols for example.
         StockCombo = new JComboBox();
         StockCombo.setForeground(Color.BLACK);
         DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
         defaultComboBoxModel.addElement("AAPL");
         defaultComboBoxModel.addElement("FB");
         defaultComboBoxModel.addElement("GOOG");
-        defaultComboBoxModel.addElement("YHOO");
         StockCombo.setModel(defaultComboBoxModel);
         gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 12 ,0, 8);//anchor: WEST, fill: HORIZONTAL
         this.add(StockCombo, gbc);

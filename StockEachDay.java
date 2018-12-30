@@ -1,5 +1,5 @@
 /**
- * This Class is used to store the six stock params (String) of each day.
+ * This Class is used to store the six stock attributes of each day.
  * They can be read into String/Double type by the getters.
  * In case some data is missing, the getters would replace missing data with zero.
  * @author Sheng Liang

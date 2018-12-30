@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /**
  * This class is the main GUI of the project.
@@ -9,6 +10,7 @@ import java.awt.event.WindowEvent;
  * The logoPanel show a logo "MarketGUI" and my github URL. The messagePanel show some messages after user operates.
  * The centerPanel is where the main features are. It contains 7 JComboBoxes and a JButton.
  * After select all JComboBoxes and click the JButton, a new JFrame drawStockFrame will be opened.
+ * User could open 3 new drawStockFrame windows at most.
  * In drawStockFrame, a graph of the stock Close data will be showed.
  * And user can select which data would be display by clicking the JButtons on the right.
  * @author Sheng Liang
@@ -21,45 +23,67 @@ public class MarketGUI extends JFrame {
     private CenterPanel centerPanel;
     private StockData stockData;
     private GridBagConstraints MainGBC;
+    private ArrayList<String> stockLog;
 
     /**
-     * This method would be used in CenterPanel. It receives a status from CenterPanel,
+     * This method would be used in centerPanel, to check whether a new window would be opened.
+     * */
+    public ArrayList<String> getStockLog() {
+        return stockLog;
+    }
+
+    /**
+     * This method would be used in the centerPanel. It receives a status from the centerPanel,
      * if the status is OK, then gets the stockData and open a new DrawStockFrame to draw the graph,
-     * otherwise prints error messages by using MessagePanel.
+     * otherwise displays error messages by using messagePanel.
      * @param status
      */
     public void getMessage(int status){
         if (status == 0){//OK
             stockData = centerPanel.getStockData();
-            //print the ticker symbol and data duration on messagePanel,
-            //the duration depends on data in the URL, is not all ways the same with input since no data on holidays.
-            messagePanel.setDisplayString("Last Gotten Data : " + stockData.getTicker_symbol()
+            String lastStock = stockData.getTicker_symbol()
                     + " from " + stockData.getDateList().get(0)
-                    + " to " + stockData.getDateList().get(stockData.getDateList().size()-1));
-            //make this window unable after open a new window
-            this.setEnabled(false);
-            MarketGUI This=this;
+                    + " to " + stockData.getDateList().get(stockData.getDateList().size()-1);
+            //print the ticker symbol and data duration on messagePanel,
+            //the gotten duration depends on data in the URL,
+            //is not always the same with selected since no data on holidays.
+            messagePanel.setDisplayString("Last Gotten Data : " + lastStock);
             //create new window
             DrawStockFrame drawStockFrame= new DrawStockFrame(stockData);
-            drawStockFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//close drawStockFrame when exit it, not all JFrames
+            //close drawStockFrame when exit it, not all windows.
+            drawStockFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             drawStockFrame.setVisible(true);
+            MarketGUI This=this;
+            //add WindowListener to the new window., countWindows-- when it closed.
             drawStockFrame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    This.setEnabled(true);
+                public void windowOpened(WindowEvent e) {//countWindows++, add new gotten duration when it opened.
+                    This.stockLog.add(lastStock);
+                }
+                public void windowClosed(WindowEvent e) {//countWindows--, remove gotten duration when it opened.
+                    This.stockLog.remove(lastStock);
                 }
             });
         }
         else if (status == 1){//Error1
-            messagePanel.setDisplayString("End Date Error: Later Than today.");
+            messagePanel.setDisplayString("Opened Too Many Windows.");
         }
         else if (status == 2){//Error2
-            messagePanel.setDisplayString("Start Date Error: Not Before End Date.");
+            messagePanel.setDisplayString("Please Select Stock, Start Date And End Date.");
         }
         else if (status == 3){//Error3
-            messagePanel.setDisplayString("Please Select Stock, Start Date and End Date.");
+            messagePanel.setDisplayString("End Date Error: Later Than Today.");
         }
         else if (status == 4){//Error4
-            messagePanel.setDisplayString("Don't Have Enough Data");
+            messagePanel.setDisplayString("Start Date Error: Not Before End Date.");
+        }
+        else if (status == 5){//Error5
+            messagePanel.setDisplayString("Don't Have Any Data.");
+        }
+        else if (status == 6){//Error6
+            messagePanel.setDisplayString("Only Have One Data Point, Not Enough For A Graph.");
+        }
+        else if (status == 7){//Error7
+            messagePanel.setDisplayString("You Have Gotten The Same Data.");
         }
     }
 
@@ -67,7 +91,6 @@ public class MarketGUI extends JFrame {
         MainPanel = new JPanel();
         MainPanel.setLayout(new GridBagLayout());
         this.setContentPane(MainPanel);
-        MainGBC = new GridBagConstraints();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -75,30 +98,25 @@ public class MarketGUI extends JFrame {
         this.setTitle("MarketGUI");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
+        this.stockLog = new ArrayList();
 
         //North: LogoPanel
         logoPanel = new LogoPanel();
         logoPanel.setLayout(new GridBagLayout());
-        MainGBC.gridx=0;
-        MainGBC.gridy=0;
-        MainGBC.fill=GridBagConstraints.BOTH;
+        MainGBC = StaticMethods.setGbc(null, 0,0,10,1,0,0,0,0);
         MainPanel.add(logoPanel, MainGBC);
         logoPanel.setPreferredSize(new Dimension(800, 150));
 
         //South: MessagePanel
         messagePanel = new MessagePanel();
-        MainGBC.gridx=0;
-        MainGBC.gridy=2;
-        MainGBC.fill=GridBagConstraints.BOTH;
+        MainGBC = StaticMethods.setGbc(MainGBC, 0,2,10,1,0,0,0,0);
         messagePanel.setDisplayString("Welcome to MarketGUI !");
         MainPanel.add(messagePanel, MainGBC);
         messagePanel.setPreferredSize(new Dimension(800, 40));
 
         //Center: CenterPanel
         centerPanel= new CenterPanel(this);
-        MainGBC.gridx=0;
-        MainGBC.gridy=1;
-        MainGBC.fill=GridBagConstraints.BOTH;
+        MainGBC = StaticMethods.setGbc(MainGBC, 0,1,10,1,0,0,0,0);
         MainPanel.add(centerPanel, MainGBC);
         centerPanel.setPreferredSize(new Dimension(800, 220));
     }

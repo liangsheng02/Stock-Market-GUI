@@ -49,13 +49,13 @@ public class DataRetriever {
                 eachLine = reader.readLine();
             }
             reader.close();
-        } else {
-            System.out.println("Wrong URL");
+            //reverse the ArrayList to make the earliest date in the front, since the latest date is on the top in the URL.
+            Collections.reverse(StockList);
+            stockData = new StockData(StockList, ticker_symbol);
+            return stockData;
+        } else {//Wrong URL
+            return null;
         }
-        //reverse the ArrayList to make the earliest date in the front, since the latest date is on the top in the URL.
-        Collections.reverse(StockList);
-        stockData = new StockData(StockList, ticker_symbol);
-        return stockData;
     }
 
     /**

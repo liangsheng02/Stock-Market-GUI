@@ -5,7 +5,8 @@ import java.util.Iterator;
  * This class is used to store and read stock data.
  * It contains the ticker symbol, and an StockList during a period.
  * Data could be read into ArrayLists by using the getters in this class.
- * Each element of the StockList is a StockEachDay object, which contains 6 params.
+ * Each element of the StockList is a StockEachDay object, which contains 6 attributes.
+ * (Actually this class could be merged with StockEachDay class, but it's more readable to be separated.)
  * @author Sheng Liang
  * */
 public class StockData {
