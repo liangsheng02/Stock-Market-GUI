@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.awt.BasicStroke;
 import java.awt.FontMetrics;
@@ -27,7 +28,7 @@ import java.util.Iterator;
  *  But I think it is not very necessary in this little project.)
  * @author Sheng Liang
  */
-public class DrawStock extends JPanel implements MouseMotionListener, MouseListener {
+public class DrawStockPanel extends JPanel implements MouseMotionListener, MouseListener {
 
     private Color graphColor = new Color(38, 41, 43, 255);
     private Color pointColor = new Color(186, 186, 186, 180);
@@ -36,7 +37,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
     private Graphics2D g2;
     private Stroke GRAPH_STROKE = new BasicStroke(2f);
     private Stroke oldStroke;
-    private int pad = 30;
+    private int pad = 25;
     private int labelPad = 20;
     private int pointWidth = 8;
     private int yDivision = 10;
@@ -53,6 +54,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
     private Point nearestY;
     private String textX;
     private String textY;
+    private String yLabel;
 
     /**
      * This method finds the nearest point by x axis.
@@ -88,7 +90,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
      * @param data ArrayList of a stock data, such as Open, Close and Volume.
      * @param date ArrayList of date
      * */
-    public DrawStock(ArrayList<Double> data, ArrayList<String> date) {
+    public DrawStockPanel(ArrayList<Double> data, ArrayList<String> date) {
         this.data = data;
         this.date = date;
         this.max = StaticMethods.getMaxData(data);
@@ -147,7 +149,12 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
                 g2.setColor(gridColor);
                 g2.drawLine(pad + labelPad, y0, getWidth() - pad, y0);
                 g2.setColor(StaticMethods.stringColor);
-                String yLabel = ((int) ((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision)) * 100)) / 100.0 + "";
+                //show label number with "M" (Million) if it is too big.
+                DecimalFormat df = new DecimalFormat("0");
+                if ((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision)) > 100000){
+                    yLabel = df.format((0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision))/1000000) + "M";
+                }
+                else{yLabel = df.format(0.8*min + (1.1*max - 0.8*min) * ((i * 1.0) / yDivision));}
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
@@ -208,7 +215,13 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
     public void mouseMoved(MouseEvent e) {
         nearestP = getNearest(e.getX());
         i = graphPoints.indexOf(nearestP);
-        textY = data.get(i) + "";
+        //Volume number is too big so it would be change to scientific notation with E automatically,
+        //However that's not beautiful. So, codes bellow would change it to original form.
+        if (data.get(i) > 100000){
+            DecimalFormat df = new DecimalFormat("0");
+            textY = df.format(data.get(i)) + "";
+        }
+        else{textY = data.get(i) + "";}
         textX = date.get(i) + "";
         nearestX = new Point(nearestP.x,getHeight() - pad - labelPad);
         nearestY = new Point(pad + labelPad, nearestP.y);
@@ -243,7 +256,7 @@ public class DrawStock extends JPanel implements MouseMotionListener, MouseListe
         StockData stockData = dr.getStockData();
         ArrayList<Double> openList = stockData.getOpenList();
         ArrayList<String> dateList = stockData.getDateList();
-        DrawStock drawStock = new DrawStock(openList, dateList);
+        DrawStockPanel drawStock = new DrawStockPanel(openList, dateList);
         drawStock.setPreferredSize(new Dimension(800, 600));
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

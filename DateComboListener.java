@@ -49,13 +49,13 @@ public class DateComboListener implements ItemListener{
                 Day.addItem(i + 1);
             }
         }
-        else if (month == 2 && year % 4 != 0 ) {//29 days on Feb in a Not leap year
+        else if (month == 2 && year % 4 != 0 ) {//29 days in Feb in a Not leap year
             for (int i = 0; i < 29; i++) {
                 Day.addItem(i + 1);
             }
         }
         else{
-            for (int i = 0; i < 28; i++) {//28 days on Feb in a leap year
+            for (int i = 0; i < 28; i++) {//28 days in Feb in a leap year
                 Day.addItem(i + 1);
             }
         }

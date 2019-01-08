@@ -16,8 +16,9 @@ public class DrawStockFrame extends JFrame implements ActionListener {
     private String labelText;
     private Double Close0; //the Close of the stock on Start Day
     private Double Close1; //the Close of the stock on End Day
-    private DrawStock drawStock;
+    private DrawStockPanel drawStock;
     private StockData stockData;
+    private String dateOnTitle;
 
     /**
      * Constructor, add a DrawStock JPanel and a columnOfButtons JPanel on the Frame.
@@ -26,16 +27,17 @@ public class DrawStockFrame extends JFrame implements ActionListener {
     public DrawStockFrame(StockData stockData) {
 
         this.stockData = stockData;
-        this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol()
-                + " from " +this.stockData.getDateList().get(0)
-                + " to " + this.stockData.getDateList().get(this.stockData.getDateList().size()-1));
+        dateOnTitle = " from " +this.stockData.getDateList().get(0)
+                + " to " + this.stockData.getDateList().get(this.stockData.getDateList().size()-1);
+        //initialise the title with "Close"
+        this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " Close" + dateOnTitle);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
         this.setBounds((int) width/4, (int) height/4, (int) width/2, (int) height/2);
 
         Container contentPane = this.getContentPane();
-        drawStock = new DrawStock(this.stockData.getCloseList(), this.stockData.getDateList());
+        drawStock = new DrawStockPanel(this.stockData.getCloseList(), this.stockData.getDateList());
         contentPane.add(drawStock, BorderLayout.CENTER);
 
         //Create a label to show the stock's ticker_symbol.
@@ -81,10 +83,9 @@ public class DrawStockFrame extends JFrame implements ActionListener {
      * */
     private void makeButton(JPanel p, String name, ActionListener target) {
         JButton b = new JButton(name);
-        b.setBackground(StaticMethods.backgroundColor);
         Font f = StaticMethods.getFont("Arial Black", -1, -1, this.getFont());
         if (f != null){b.setFont(f);}
-        b.setForeground(StaticMethods.stringColor);
+        b.setForeground(Color.black);
         // add it to the specified JPanel and make the JPanel listen
         p.add(b);
         b.addActionListener(target);
@@ -92,26 +93,30 @@ public class DrawStockFrame extends JFrame implements ActionListener {
 
     /**
      * This method detects which button is clicked by User,
-     * then send corresponding ArrayList to drawStock, and repaint the line graph.
+     * then send corresponding ArrayList to drawStock, repaint the line graph, and change the title.
      * */
     public void actionPerformed(ActionEvent e) {
-        // Do the appropriate thing depending on which button is pressed.
-        // Use the getActionCommand() method to identify the button.
+        //Do the setData method and change title thing depending on which button is pressed.
         String command = e.getActionCommand();
         if (command.equals("Open")) {
             drawStock.setData(stockData.getOpenList());
+            this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " Open" + dateOnTitle);
         }
         else if (command.equals("Close")) {
             drawStock.setData(stockData.getCloseList());
+            this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " Close" + dateOnTitle);
         }
         else if (command.equals("High")) {
             drawStock.setData(stockData.getHighList());
+            this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " High" + dateOnTitle);
         }
         else if (command.equals("Low")) {
             drawStock.setData(stockData.getLowList());
+            this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " Low" + dateOnTitle);
         }
         else if (command.equals("Volume")) {
             drawStock.setData(stockData.getVolumeList());
+            this.setTitle("Stock Trend - " + this.stockData.getTicker_symbol() + " Volume" + dateOnTitle);
         }
 
     }
