@@ -130,9 +130,8 @@ public class CenterPanel extends JPanel {
      * If choose Jan, Mar, May, Jul, Aug, Oct or Dec, there would be 31 days.
      * If choose Apr, Jun, Sep or Nov, there would be 30 days.
      * These are approached by removing all items in Day Combo, and then add items to it according to Month and Year.
-     * @author Sheng Liang
      */
-    public class DateComboListener implements ItemListener {
+    private class DateComboListener implements ItemListener {
 
         private JComboBox Month;
         private JComboBox Day;
@@ -156,29 +155,38 @@ public class CenterPanel extends JPanel {
          */
         @Override
         public void itemStateChanged(ItemEvent e) {
-            Object objMonth = Month.getSelectedItem();//get selected month
-            Object objYear = Year.getSelectedItem();//get selected year
-            Day.removeAllItems();
-            int month = Integer.valueOf(objMonth.toString());
-            int year = Integer.valueOf(objYear.toString());
-            if (month == 4 || month==6 || month==9 || month==11) {//30 days
-                for (int i = 0; i < 30; i++) {
-                    Day.addItem(i + 1);
+            int month = Integer.valueOf(Month.getSelectedItem().toString());
+            int day = Integer.valueOf(Day.getSelectedItem().toString());
+            int year = Integer.valueOf(Year.getSelectedItem().toString());
+            if (e.getSource() == Month){
+                Day.removeAllItems();
+                if (day == 31 && (month == 4 || month==6 || month==9 || month==11)) {//30 days
+                    for (int i = 0; i < 30; i++) {
+                        Day.addItem(i + 1);
+                    }
+                }
+                else if (month == 1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {//31days
+                    for (int i = 0; i < 31; i++) {
+                        Day.addItem(i + 1);
+                    }
+                }
+                else if (month == 2){
+                    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){//29 days
+                        for (int i = 0; i < 29; i++){
+                            Day.addItem(i + 1);
+                        }
+                    }
+                    else{//28 days
+                        for (int i = 0; i < 28; i++){
+                            Day.addItem(i + 1);
+                        }
+                    }
                 }
             }
-            else if (month == 1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {//31days
-                for (int i = 0; i < 31; i++) {
-                    Day.addItem(i + 1);
-                }
-            }
-            else if (month == 2 && year % 4 != 0 ) {//29 days in Feb in a Not leap year
-                for (int i = 0; i < 29; i++) {
-                    Day.addItem(i + 1);
-                }
-            }
-            else{
+            else if (e.getSource() == Year && month == 2 && day == 29 && year % 4 != 0){
+                Day.removeAllItems();
                 for (int i = 0; i < 28; i++) {//28 days in Feb in a leap year
-                    Day.addItem(i + 1);
+                            Day.addItem(i + 1);
                 }
             }
         }
@@ -191,15 +199,17 @@ public class CenterPanel extends JPanel {
      * @param Year JComboBox, add 2016 to 2019 to the this JComboBox
      */
     public void AddItems(JComboBox Month, JComboBox Day, JComboBox Year) {
-        // add 12 months
+        //add 12 months
         for (int i = 0; i < 12; i++) {
             Month.addItem(i + 1);
         }
-        // add years from 2016 to 2019
+        //add years from 2016 to 2019 for example,
+        //all years are available here, but these four years are enough for presentation,
+        //since 2016 is a leap year, and this year is 2019.
         for (int i = 2016; i <= 2019; i++) {
             Year.addItem(i);
         }
-        // add 31 days
+        //add 31 days
         for (int j = 0; j < 31; j++) {
             Day.addItem(j + 1);
         }
@@ -288,7 +298,7 @@ public class CenterPanel extends JPanel {
         gbc = StaticMethods.setGbc(gbc,3, 0, 17, 1, 0, 10 ,0, 10);//anchor: WEST, fill: BOTH
         this.add(label5, gbc);
         //Add label "Find a Stock  :"
-        JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,16);
+        JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,18);
         gbc = StaticMethods.setGbc(gbc,0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
         gbc.gridwidth = 2;
         this.add(label6, gbc);

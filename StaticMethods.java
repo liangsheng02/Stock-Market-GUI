@@ -32,7 +32,7 @@ public class StaticMethods {
 
 
     /**
-     * This method is used to set a basic GridBagConstraints.
+     * This method is used to set a basic GridBagConstraints more easily.
      * @param x gridx
      * @param y gridy
      * @param anchor

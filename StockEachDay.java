@@ -17,32 +17,32 @@ public class StockEachDay {
         return Date;
     }
     public double getOpen() {
-        if (Open == null){
-            Open = 0 + "";
+        if (Open == "" || Open == null){
+            Open = "0";
         }
         return Double.parseDouble(Open);
     }
     public double getHigh() {
-        if (High == null){
-            High = 0 + "";
+        if (High == "" || High == null){
+            High = "0";
         }
         return Double.parseDouble(High);
     }
     public double getLow() {
-        if (Low == null){
-            Low = 0 + "";
+        if (Low == "" || Low == null){
+            Low = "0";
         }
         return Double.parseDouble(Low);
     }
     public double getClose() {
-        if (Close == null){
-            Close = 0 + "";
+        if (Close == "" || Close == null){
+            Close = "0";
         }
         return Double.parseDouble(Close);
     }
     public double getVolume() {
-        if (Volume == null){
-            Volume = 0 + "";
+        if (Volume == "" || Volume == null){
+            Volume = "0";
         }
         return Double.parseDouble(Volume);
     }

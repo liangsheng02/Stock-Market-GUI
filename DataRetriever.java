@@ -39,7 +39,8 @@ public class DataRetriever {
                 if (flag == true){//Use a flag to skip the first line
                     String Each[] = eachLine.split(",");
                     StockEachDay eachDay = new StockEachDay(Each[0], Each[1], Each[2], Each[3], Each[4], Each[5]);
-                    if(Each[0] != null){//missed date is not allowed, other missing data would be handled in StockEachDay.
+                    //missed date is not allowed, other missing data would be handled in StockEachDay.
+                    if(Each[0] != null && Each[0] != ""){
                         StockList.add(eachDay);
                     }
                 }
