@@ -135,7 +135,7 @@ public class CenterPanel extends JPanel {
                                 }
                                 else if (gui.getStockLog().contains(stockData.getTicker_symbol()
                                         + " from " + stockData.getDateList().get(0)
-                                        + "to" + stockData.getDateList().get(stockData.getDateList().size()-1))){
+                                        + " to " + stockData.getDateList().get(stockData.getDateList().size()-1))){
                                     //Error7 "You Have Gotten The Same Data."
                                     ErrorStatus = 7;
                                 }
@@ -152,8 +152,6 @@ public class CenterPanel extends JPanel {
                 }else{//Error1 "Opened Too Many Windows."
                     ErrorStatus = 1;
                 }
-
-
                 //execute getMessage method in gui to display corresponding message.
                 gui.getMessage(ErrorStatus);
             }
