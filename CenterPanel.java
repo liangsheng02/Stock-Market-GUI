@@ -9,6 +9,12 @@ import java.util.Date;
 
 /**
  * This Class is the CenterPanel (with GridBagLayout) contained in MainPanel of MarketGUI.
+ * It's where the user can operate.
+ * It contains a JComboBox for choosing stock, and six JComboBoxes for choosing month, day and year,
+ * a JButton to confirm all the selected things, and, of course, some JLabels.
+ * To initialise this class, the constructor will receive a MarketGUI object,
+ * so that the MarketGUI can make interaction with this panel.
+ * In addition, the background of this panel uses gradient color, to show an effect that opposite from the messagePanel.
  * @author Sheng Liang
  */
 public class CenterPanel extends JPanel {
@@ -26,6 +32,35 @@ public class CenterPanel extends JPanel {
     private StockData stockData;
     private MarketGUI gui;
 
+    /**
+     * This method initialises the ComboBoxes with month, year and day.
+     * @param type String, between "month", "day" and "year".
+     */
+    private JComboBox setDateCombo(String type) {
+        JComboBox comboBox = new JComboBox();
+        if (type == "month"){
+            //add 12 months
+            for (int i = 0; i < 12; i++) {
+                comboBox.addItem(i+1);
+            }
+        }
+        else if (type == "day"){
+            //add 31 days
+            for (int i = 0; i < 31; i++) {
+                comboBox.addItem(i+1);
+            }
+        }
+        else if (type == "year"){
+            //add years from 2016 to 2019 for example,
+            //all years are available here, but these four years are enough for presentation,
+            //since 2016 is a leap year, and this year is 2019.
+            for (int i = 2016; i <= 2019; i++) {
+                comboBox.addItem(i);
+            }
+        }
+        return comboBox;
+    }
+
     public StockData getStockData() {
         return stockData;
     }
@@ -38,7 +73,7 @@ public class CenterPanel extends JPanel {
      * @param size
      * @return a JLabel
      */
-    public JLabel setLabel(String labelText, String font, int style, int size) {
+    private JLabel setLabel(String labelText, String font, int style, int size) {
         JLabel label = new JLabel();
         label.setBackground(StaticMethods.stringColor);
         Font labelFont = StaticMethods.getFont(font, style, size, label.getFont());
@@ -48,7 +83,8 @@ public class CenterPanel extends JPanel {
         return label;
     }
 
-    public void paintComponent(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -126,7 +162,7 @@ public class CenterPanel extends JPanel {
 
     /**
      * This Class implements ItemListener to detect events of date ComboBox items.
-     * If choose Feb, there would be 28 days in a leap year, and 29 days in a not leap year.
+     * If choose Feb, there would be 29 days in a leap year, and 28 days in a not leap year.
      * If choose Jan, Mar, May, Jul, Aug, Oct or Dec, there would be 31 days.
      * If choose Apr, Jun, Sep or Nov, there would be 30 days.
      * These are approached by removing all items in Day Combo, and then add items to it according to Month and Year.
@@ -152,66 +188,42 @@ public class CenterPanel extends JPanel {
 
         /**
          * This method checks special dates and leap year.
+         * In Feb, the items in Day ComboBox depends on Month and Year.
+         * Otherwise, in other months, the items in Day ComboBox only depends on Month.
          */
         @Override
         public void itemStateChanged(ItemEvent e) {
             int month = Integer.valueOf(Month.getSelectedItem().toString());
-            int day = Integer.valueOf(Day.getSelectedItem().toString());
             int year = Integer.valueOf(Year.getSelectedItem().toString());
-            if (e.getSource() == Month){
+            if (e.getSource()==Month && (month == 4 || month==6 || month==9 || month==11)){
                 Day.removeAllItems();
-                if (day == 31 && (month == 4 || month==6 || month==9 || month==11)) {//30 days
-                    for (int i = 0; i < 30; i++) {
+                //30 days
+                for (int i = 0; i < 30; i++) {
+                    Day.addItem(i + 1);
+                }
+            }
+            else if (e.getSource()==Month && (month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)){
+                Day.removeAllItems();
+                //31days
+                for (int i = 0; i < 31; i++) {
+                    Day.addItem(i + 1);
+                }
+            }
+            else if (month == 2){
+                Day.removeAllItems();
+                if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){
+                    //29 days
+                    for (int i = 0; i < 29; i++){
                         Day.addItem(i + 1);
                     }
                 }
-                else if (month == 1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {//31days
-                    for (int i = 0; i < 31; i++) {
+                else{
+                    //28 days
+                    for (int i = 0; i < 28; i++){
                         Day.addItem(i + 1);
                     }
                 }
-                else if (month == 2){
-                    if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){//29 days
-                        for (int i = 0; i < 29; i++){
-                            Day.addItem(i + 1);
-                        }
-                    }
-                    else{//28 days
-                        for (int i = 0; i < 28; i++){
-                            Day.addItem(i + 1);
-                        }
-                    }
-                }
             }
-            else if (e.getSource() == Year && month == 2 && day == 29 && year % 4 != 0){
-                Day.removeAllItems();
-                for (int i = 0; i < 28; i++) {//28 days in Feb in a leap year
-                            Day.addItem(i + 1);
-                }
-            }
-        }
-    }
-
-    /**
-     * This method initialises the three ComboBoxes for month, year and day.
-     * @param Month JComboBox, add 12 months to the this JComboBox
-     * @param Day JComboBox, add 31 days to the this JComboBox
-     * @param Year JComboBox, add 2016 to 2019 to the this JComboBox
-     */
-    public void AddItems(JComboBox Month, JComboBox Day, JComboBox Year) {
-        //add 12 months
-        for (int i = 0; i < 12; i++) {
-            Month.addItem(i + 1);
-        }
-        //add years from 2016 to 2019 for example,
-        //all years are available here, but these four years are enough for presentation,
-        //since 2016 is a leap year, and this year is 2019.
-        for (int i = 2016; i <= 2019; i++) {
-            Year.addItem(i);
-        }
-        //add 31 days
-        for (int j = 0; j < 31; j++) {
-            Day.addItem(j + 1);
         }
     }
 
@@ -230,35 +242,33 @@ public class CenterPanel extends JPanel {
         this.setForeground(StaticMethods.stringColor);
 
         //Add StartMonthCombo
-        StartMonthCombo = new JComboBox();
+        StartMonthCombo = setDateCombo("month");
         gbc = StaticMethods.setGbc(null,1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         gbc.ipadx = 20;
         this.add(StartMonthCombo, gbc);
         //Add StartDayCombo
-        StartDayCombo = new JComboBox();
+        StartDayCombo = setDateCombo("day");
         gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
         gbc.ipadx = 0;
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
-        StartYearCombo = new JComboBox();
+        StartYearCombo = setDateCombo("year");
         gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
-        EndMonthCombo = new JComboBox();
+        EndMonthCombo = setDateCombo("month");
         gbc = StaticMethods.setGbc(gbc,1, 2, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         this.add(EndMonthCombo, gbc);
         //Add EndDayCombo
-        EndDayCombo = new JComboBox();
+        EndDayCombo = setDateCombo("day");
         gbc = StaticMethods.setGbc(gbc,2, 2, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
-        EndYearCombo = new JComboBox();
+        EndYearCombo = setDateCombo("year");
         gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
 
         //to control the Day items, initialise the three combo boxes, and add ItemListeners to Month and Year.
-        AddItems(StartMonthCombo, StartDayCombo, StartYearCombo);
-        AddItems(EndMonthCombo, EndDayCombo, EndYearCombo);
         DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
         DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
         StartMonthCombo.addItemListener(dateComboListener1);

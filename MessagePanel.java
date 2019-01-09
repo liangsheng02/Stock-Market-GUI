@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * This Class shows messages after click the button on MainPanel.
+ * This Class shows messages after click the button on centerPanel in MarketGUI.
+ * It's background uses gradient color, to show an effect that opposite from the centerPanel.
  * @author Sheng Liang
  */
 public class MessagePanel extends JPanel {

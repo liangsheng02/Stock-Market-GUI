@@ -49,6 +49,9 @@ public class LogoPanel extends JPanel {
 
     }
 
+    /**
+     * Constructor only set a background color.
+     * */
     public LogoPanel() {
         this.setBackground(StaticMethods.backgroundColor);
     }

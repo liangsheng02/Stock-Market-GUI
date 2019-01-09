@@ -2,7 +2,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * This Class is a public class with some methods and attributes which would be used in many files.
+ * This Class is a public class with some methods and attributes which would be used in many files of this project.
+ * @author Sheng Liang
  * */
 public class StaticMethods {
 

@@ -20,6 +20,24 @@ public class DrawStockFrame extends JFrame implements ActionListener {
     private StockData stockData;
     private String dateOnTitle;
 
+
+    /**
+     * This method creates JRadioButton and add ActionListener to it.
+     * @param p JPanel that this button will add to
+     * @param name name of the button
+     * @param target ActionListener
+     * */
+    private void setRadioButton(JPanel p, String name, ActionListener target) {
+        JRadioButton b = new JRadioButton(name);
+        b.setBackground(StaticMethods.backgroundColor);
+        Font f = StaticMethods.getFont("Arial Black", -1, -1, this.getFont());
+        if (f != null){b.setFont(f);}
+        b.setForeground(StaticMethods.stringColor);
+        // add it to the specified JPanel and make the JPanel listen
+        p.add(b);
+        b.addActionListener(target);
+    }
+
     /**
      * Constructor, add a DrawStock JPanel and a columnOfButtons JPanel on the Frame.
      * @param stockData StockData object
@@ -66,29 +84,13 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         columnOfButtons.setBackground(StaticMethods.backgroundColor);
         columnOfButtons.add(new Label());//add empty label to get an empty place
         columnOfButtons.add(ticker_symbol);
-        makeButton(columnOfButtons, "Open", this);
-        makeButton(columnOfButtons, "Close", this);
-        makeButton(columnOfButtons, "High", this);
-        makeButton(columnOfButtons, "Low", this);
-        makeButton(columnOfButtons, "Volume", this);
+        setRadioButton(columnOfButtons, "Open", this);
+        setRadioButton(columnOfButtons, "Close", this);
+        setRadioButton(columnOfButtons, "High", this);
+        setRadioButton(columnOfButtons, "Low", this);
+        setRadioButton(columnOfButtons, "Volume", this);
         columnOfButtons.add(new Label());//add empty label to get an empty place
         contentPane.add(columnOfButtons, BorderLayout.EAST);
-    }
-
-    /**
-     * This method creates button and add ActionListener to it.
-     * @param p JPanel that this button will add to
-     * @param name name of the button
-     * @param target ActionListener
-     * */
-    private void makeButton(JPanel p, String name, ActionListener target) {
-        JButton b = new JButton(name);
-        Font f = StaticMethods.getFont("Arial Black", -1, -1, this.getFont());
-        if (f != null){b.setFont(f);}
-        b.setForeground(Color.black);
-        // add it to the specified JPanel and make the JPanel listen
-        p.add(b);
-        b.addActionListener(target);
     }
 
     /**

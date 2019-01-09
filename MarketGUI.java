@@ -45,8 +45,8 @@ public class MarketGUI extends JFrame {
                     + " from " + stockData.getDateList().get(0)
                     + " to " + stockData.getDateList().get(stockData.getDateList().size()-1);
             //print the ticker symbol and data duration on messagePanel,
-            //the gotten duration depends on data in the URL,
-            //is not always the same with selected since no data on holidays.
+            //the gotten duration depends on the csv file on the URL,
+            //which is not always the same with selected since no data on holidays.
             messagePanel.setDisplayString("Last Gotten Data : " + lastStock);
             //create new window
             DrawStockFrame drawStockFrame= new DrawStockFrame(stockData);
@@ -91,30 +91,31 @@ public class MarketGUI extends JFrame {
         MainPanel = new JPanel();
         MainPanel.setLayout(new GridBagLayout());
         this.setContentPane(MainPanel);
+        this.stockLog = new ArrayList();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
         this.setBounds((int) width/4, (int) height/4, (int) width/2, (int) height/2);
         this.setTitle("MarketGUI");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //There's no need to resize, since it's only some ComboBoxes here, it would be not beautiful after resize.
         this.setResizable(false);
-        this.stockLog = new ArrayList();
 
-        //North: LogoPanel
+        //North: logoPanel
         logoPanel = new LogoPanel();
         logoPanel.setLayout(new GridBagLayout());
         MainGBC = StaticMethods.setGbc(null, 0,0,10,1,0,0,0,0);
         MainPanel.add(logoPanel, MainGBC);
         logoPanel.setPreferredSize(new Dimension(800, 150));
 
-        //South: MessagePanel
+        //South: messagePanel
         messagePanel = new MessagePanel();
         MainGBC = StaticMethods.setGbc(MainGBC, 0,2,10,1,0,0,0,0);
         messagePanel.setDisplayString("Welcome to MarketGUI !");
         MainPanel.add(messagePanel, MainGBC);
         messagePanel.setPreferredSize(new Dimension(800, 40));
 
-        //Center: CenterPanel
+        //Center: centerPanel
         centerPanel= new CenterPanel(this);
         MainGBC = StaticMethods.setGbc(MainGBC, 0,1,10,1,0,0,0,0);
         MainPanel.add(centerPanel, MainGBC);
