@@ -27,7 +27,6 @@ public class CenterPanel extends JPanel {
     private JComboBox EndYearCombo;
     private JComboBox StockCombo;
     private JButton GoButton;
-    private GridBagConstraints gbc;
     private int ErrorStatus;
     private StockData stockData;
     private MarketGUI gui;
@@ -38,24 +37,29 @@ public class CenterPanel extends JPanel {
      */
     private JComboBox setDateCombo(String type) {
         JComboBox comboBox = new JComboBox();
-        if (type == "month"){
-            //add 12 months
-            for (int i = 0; i < 12; i++) {
-                comboBox.addItem(i+1);
+        switch(type){
+            case "month":{
+                //add 12 months
+                for (int i = 0; i < 12; i++) {
+                    comboBox.addItem(i+1);
+                }
+                break;
             }
-        }
-        else if (type == "day"){
-            //add 31 days
-            for (int i = 0; i < 31; i++) {
-                comboBox.addItem(i+1);
+            case "day":{
+                //add 31 days
+                for (int i = 0; i < 31; i++) {
+                    comboBox.addItem(i+1);
+                }
+                break;
             }
-        }
-        else if (type == "year"){
-            //add years from 2016 to 2019 for example,
-            //all years are available here, but these four years are enough for presentation,
-            //since 2016 is a leap year, and this year is 2019.
-            for (int i = 2016; i <= 2019; i++) {
-                comboBox.addItem(i);
+            case "year":{
+                //add years from 2016 to 2019 for example,
+                //all years are available here, but these four years are enough for presentation,
+                //since 2016 is a leap year, and this year is 2019.
+                for (int i = 2016; i <= 2019; i++) {
+                    comboBox.addItem(i);
+                }
+                break;
             }
         }
         return comboBox;
@@ -66,17 +70,15 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * This setter is used to set a Label.
-     * @param labelText
-     * @param font
-     * @param style
-     * @param size
+     * This setter is used to set a JLabel.
+     * @param labelText the text on the label
+     * @param size the size of the text
      * @return a JLabel
      */
-    private JLabel setLabel(String labelText, String font, int style, int size) {
+    private JLabel setLabel(String labelText, int size) {
         JLabel label = new JLabel();
         label.setBackground(StaticMethods.stringColor);
-        Font labelFont = StaticMethods.getFont(font, style, size, label.getFont());
+        Font labelFont = StaticMethods.getFont("Arial Black", -1, size, label.getFont());
         if (labelFont != null) label.setFont(labelFont);
         label.setForeground(StaticMethods.stringColor);
         label.setText(labelText);
@@ -238,6 +240,7 @@ public class CenterPanel extends JPanel {
             this.setFont(CenterPanelFont);
         }
         this.setForeground(StaticMethods.stringColor);
+        GridBagConstraints gbc;
 
         //Add StartMonthCombo
         StartMonthCombo = setDateCombo("month");
@@ -286,27 +289,27 @@ public class CenterPanel extends JPanel {
         this.add(StockCombo, gbc);
 
         //Add label "Start Date :"
-        JLabel label1 = setLabel("Start Date :","Arial Black",-1,-1);
+        JLabel label1 = setLabel("Start Date :",-1);
         gbc = StaticMethods.setGbc(gbc,0, 1, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
         this.add(label1, gbc);
         //Add label "End Date   :"
-        JLabel label2 = setLabel("End Date   :","Arial Black",-1,-1);
+        JLabel label2 = setLabel("End Date   :",-1);
         gbc = StaticMethods.setGbc(gbc,0, 2, 13, 0, 5, 0 ,0, 5);//anchor: EAST, fill: None
         this.add(label2, gbc);
         //Add label "Month"
-        JLabel label3 = setLabel("Month","Arial Black",-1,-1);
+        JLabel label3 = setLabel("Month",-1);
         gbc = StaticMethods.setGbc(gbc,1, 0, 17, 1, 0, 10 ,0, 0);//anchor: WEST, fill: BOTH
         this.add(label3, gbc);
         //Add label "Day"
-        JLabel label4 = setLabel("Day","Arial Black",-1,-1);
+        JLabel label4 = setLabel("Day",-1);
         gbc = StaticMethods.setGbc(gbc,2, 0, 17, 1, 0, 12 ,0, 0);//anchor: WEST, fill: BOTH
         this.add(label4, gbc);
         //Add label "Year"
-        JLabel label5 = setLabel("Year","Arial Black",-1,-1);
+        JLabel label5 = setLabel("Year",-1);
         gbc = StaticMethods.setGbc(gbc,3, 0, 17, 1, 0, 10 ,0, 10);//anchor: WEST, fill: BOTH
         this.add(label5, gbc);
         //Add label "Find a Stock  :"
-        JLabel label6 = setLabel("Find a Stock  :","Arial Black",-1,18);
+        JLabel label6 = setLabel("Find a Stock  :",18);
         gbc = StaticMethods.setGbc(gbc,0, 3, 17, 1, 10, 0 ,0, 5);//anchor: WEST, fill: BOTH
         gbc.gridwidth = 2;
         this.add(label6, gbc);

@@ -17,31 +17,31 @@ public class StockEachDay {
         return Date;
     }
     public double getOpen() {
-        if (Open == "" || Open == null){
+        if (Open.equals("")){
             Open = "0";
         }
         return Double.parseDouble(Open);
     }
     public double getHigh() {
-        if (High == "" || High == null){
+        if (High.equals("")){
             High = "0";
         }
         return Double.parseDouble(High);
     }
     public double getLow() {
-        if (Low == "" || Low == null){
+        if (Low.equals("")){
             Low = "0";
         }
         return Double.parseDouble(Low);
     }
     public double getClose() {
-        if (Close == "" || Close == null){
+        if (Close.equals("")){
             Close = "0";
         }
         return Double.parseDouble(Close);
     }
     public double getVolume() {
-        if (Volume == "" || Volume == null){
+        if (Volume.equals("")){
             Volume = "0";
         }
         return Double.parseDouble(Volume);

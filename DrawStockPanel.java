@@ -34,16 +34,10 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
     private Color pointColor = new Color(186, 186, 186, 180);
     private Color gridColor = new Color(136, 138, 141, 200);
     private Color lineColor = new Color(186, 186, 186, 120);
-    private Graphics2D g2;
     private Stroke GRAPH_STROKE = new BasicStroke(2f);
-    private Stroke oldStroke;
     private int pad = 25;
     private int labelPad = 20;
-    private int pointWidth = 8;
-    private int yDivision = 10;
     private int i ;
-    private Double xScale;
-    private Double yScale;
     private Double min;
     private Double max;
     private ArrayList<Double> data;
@@ -54,7 +48,6 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
     private Point nearestY;
     private String textX;
     private String textY;
-    private String yLabel;
 
     /**
      * This method finds the nearest point by x axis.
@@ -110,12 +103,12 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
-        g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         //create graphPoints ArrayList to store data points;
-        xScale = ((double) getWidth() - 2*pad - labelPad) / (data.size() - 1);
-        yScale = ((double) getHeight()- 2*pad - labelPad) / (1.1*max - 0.8*min);
+        Double xScale = ((double) getWidth() - 2*pad - labelPad) / (data.size() - 1);
+        Double yScale = ((double) getHeight()- 2*pad - labelPad) / (1.1*max - 0.8*min);
         graphPoints = new ArrayList<>();
         Iterator dataIterator = data.iterator();
         i = 0;
@@ -141,7 +134,9 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
                 getWidth() - pad, getHeight() - pad - labelPad);
 
         //draw grid lines for y axis.
+        int yDivision = 10;
         i = 0;
+        String yLabel;
         while (i <= yDivision) {
             int x0 = pad + labelPad - 3;
             int y0 = getHeight() - ((i * (getHeight() - pad * 2 - labelPad)) / yDivision + pad + labelPad);
@@ -163,7 +158,7 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
         }
 
         //draw lines graph and bars
-        oldStroke = g2.getStroke();
+        Stroke oldStroke = g2.getStroke();
         g2.setStroke(GRAPH_STROKE);
         i = 0;
         while (i < graphPoints.size() - 1) {
@@ -196,7 +191,8 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
             //draw points
             g2.setStroke(oldStroke);
             g2.setColor(pointColor);
-            g2.fillOval(nearestP.x - pointWidth / 2, nearestP.y - pointWidth / 2, pointWidth, pointWidth);
+            int pointDiameter = 8;
+            g2.fillOval(nearestP.x - pointDiameter/2, nearestP.y - pointDiameter/2, pointDiameter, pointDiameter);
             //draw dotted lines
             g2.setColor(lineColor);
             g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,0, new float[]{8,12},0));

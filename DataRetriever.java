@@ -17,8 +17,7 @@ import java.util.Date;
 public class DataRetriever {
 
     private String ticker_symbol;
-    private static String URL;
-    private StockData stockData;
+    private String URL;
 
     /**
      * This getter retrieves data from the URL, and store each line as a StockEachDay object into an ArrayList.
@@ -36,11 +35,11 @@ public class DataRetriever {
             String eachLine = reader.readLine();
             boolean flag = false;
             while (eachLine != null) {
-                if (flag == true){//Use a flag to skip the first line
-                    String Each[] = eachLine.split(",");
+                if (flag){//Use a flag to skip the first line
+                    String[] Each = eachLine.split(",");
                     StockEachDay eachDay = new StockEachDay(Each[0], Each[1], Each[2], Each[3], Each[4], Each[5]);
                     //missed date is not allowed, other missing data would be handled in StockEachDay.
-                    if(Each[0] != null && Each[0] != ""){
+                    if(Each[0] != null && !Each[0].equals("")){
                         StockList.add(eachDay);
                     }
                 }
@@ -52,8 +51,7 @@ public class DataRetriever {
             reader.close();
             //reverse the ArrayList to make the earliest date in the front, since the latest date is on the top in the URL.
             Collections.reverse(StockList);
-            stockData = new StockData(StockList, ticker_symbol);
-            return stockData;
+            return new StockData(StockList, ticker_symbol);
         } else {//Wrong URL
             return null;
         }
@@ -66,7 +64,8 @@ public class DataRetriever {
      * @param endDate String date such as 01/01/2019
      */
     public DataRetriever(String ticker_symbol, String startDate, String endDate) {
-        int num = 0;//max num_rows that allow to download.
+        //Set num_rows that allow to download.
+        int num = 0;
         try {
             Date start = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
             Date end = new SimpleDateFormat("MM/dd/yyyy").parse(endDate);

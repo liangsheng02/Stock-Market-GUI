@@ -9,10 +9,10 @@ public class StaticMethods {
 
     /**
      * This method is used to get a font.
-     * @param fontName
-     * @param style
-     * @param size
-     * @param currentFont
+     * @param fontName a font, such as "Ariel Black"
+     * @param style the style of the font
+     * @param size the size of the font
+     * @param currentFont current font
      * @return a Font
      */
     public static Font getFont(String fontName, int style, int size, Font currentFont) {
@@ -34,10 +34,10 @@ public class StaticMethods {
 
     /**
      * This method is used to set a basic GridBagConstraints more easily.
-     * @param x gridx
-     * @param y gridy
-     * @param anchor
-     * @param fill
+     * @param x the gridx in GridBagConstraints
+     * @param y thegridy in GridBagConstraints
+     * @param anchor the anchor in GridBagConstraints
+     * @param fill the fill in GridBagConstraints
      * @param top the param 'top' of  Insets object
      * @param left the param 'left' of  Insets object
      * @param bottom the param 'bottom' of  Insets object

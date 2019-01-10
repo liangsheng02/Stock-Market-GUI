@@ -7,11 +7,8 @@ import java.awt.*;
  * */
 public class LogoPanel extends JPanel {
 
-    private Graphics2D g2;
     private Color logoColor1 = new Color(242, 255, 255,255);
     private Color logoColor2 = new Color(91, 96, 98,255);
-    private String logo = "MarketGUI";
-    private String me = "github.com/liangsheng02";
 
     /**
      * This method applies Graphics2d to draw the line graph.
@@ -19,8 +16,12 @@ public class LogoPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
 
+        //These would be draw.
+        String logo = "MarketGUI";
+        String me = "github.com/liangsheng02";
+
         super.paintComponent(g);
-        g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         //set font and location of the text, and then draw it!

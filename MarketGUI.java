@@ -17,12 +17,8 @@ import java.util.ArrayList;
  * */
 public class MarketGUI extends JFrame {
 
-    private JPanel MainPanel;
-    private JPanel logoPanel;
     private MessagePanel messagePanel;
     private CenterPanel centerPanel;
-    private StockData stockData;
-    private GridBagConstraints MainGBC;
     private ArrayList<String> stockLog;
 
     /**
@@ -36,11 +32,11 @@ public class MarketGUI extends JFrame {
      * This method would be used in the centerPanel. It receives a status from the centerPanel,
      * if the status is OK, then gets the stockData and open a new DrawStockFrame to draw the graph,
      * otherwise displays error messages by using messagePanel.
-     * @param status
+     * @param status The 8 status that get from centerPanel.
      */
     public void getMessage(int status){
         if (status == 0){//OK
-            stockData = centerPanel.getStockData();
+            StockData stockData = centerPanel.getStockData();
             String lastStock = stockData.getTicker_symbol()
                     + " from " + stockData.getDateList().get(0)
                     + " to " + stockData.getDateList().get(stockData.getDateList().size()-1);
@@ -87,11 +83,11 @@ public class MarketGUI extends JFrame {
         }
     }
 
-    public MarketGUI() {
-        MainPanel = new JPanel();
+    private MarketGUI() {
+        JPanel MainPanel = new JPanel();
         MainPanel.setLayout(new GridBagLayout());
         this.setContentPane(MainPanel);
-        this.stockLog = new ArrayList();
+        this.stockLog = new ArrayList<>();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();
@@ -102,8 +98,9 @@ public class MarketGUI extends JFrame {
         this.setResizable(false);
 
         //North: logoPanel
-        logoPanel = new LogoPanel();
+        JPanel logoPanel = new LogoPanel();
         logoPanel.setLayout(new GridBagLayout());
+        GridBagConstraints MainGBC;
         MainGBC = StaticMethods.setGbc(null, 0,0,10,1,0,0,0,0);
         MainPanel.add(logoPanel, MainGBC);
         logoPanel.setPreferredSize(new Dimension(800, 150));
