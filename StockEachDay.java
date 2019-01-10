@@ -54,7 +54,7 @@ public class StockEachDay {
      * @param High String such as "129.13"
      * @param Low String such as "129.13"
      * @param Close String such as "129.13"
-     * @param Volume String such as "34424"
+     * @param Volume String such as "34424646"
      */
     public StockEachDay(String Date,String Open,String High,String Low,String Close,String Volume) {
         this.Date = Date;

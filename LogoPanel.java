@@ -7,8 +7,8 @@ import java.awt.*;
  * */
 public class LogoPanel extends JPanel {
 
-    private Color logoColor1 = new Color(242, 255, 255,255);
-    private Color logoColor2 = new Color(91, 96, 98,255);
+    private static Color logoColor1 = new Color(242, 255, 255,255);
+    private static Color logoColor2 = new Color(91, 96, 98,255);
 
     /**
      * This method applies Graphics2d to draw the line graph.

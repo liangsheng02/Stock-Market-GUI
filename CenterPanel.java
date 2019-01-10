@@ -19,13 +19,13 @@ import java.util.Date;
  */
 public class CenterPanel extends JPanel {
 
-    private JComboBox StartMonthCombo;
-    private JComboBox StartDayCombo;
-    private JComboBox StartYearCombo;
-    private JComboBox EndMonthCombo;
-    private JComboBox EndDayCombo;
-    private JComboBox EndYearCombo;
-    private JComboBox StockCombo;
+    private JComboBox<Integer> StartMonthCombo;
+    private JComboBox<Integer> StartDayCombo;
+    private JComboBox<Integer> StartYearCombo;
+    private JComboBox<Integer> EndMonthCombo;
+    private JComboBox<Integer> EndDayCombo;
+    private JComboBox<Integer> EndYearCombo;
+    private JComboBox<String> StockCombo;
     private JButton GoButton;
     private int ErrorStatus;
     private StockData stockData;
@@ -35,8 +35,8 @@ public class CenterPanel extends JPanel {
      * This method initialises the ComboBoxes with month, year and day.
      * @param type String, between "month", "day" and "year".
      */
-    private JComboBox setDateCombo(String type) {
-        JComboBox comboBox = new JComboBox();
+    private JComboBox<Integer> setDateCombo(String type) {
+        JComboBox<Integer> comboBox = new JComboBox<>();
         switch(type){
             case "month":{
                 //add 12 months
@@ -169,9 +169,9 @@ public class CenterPanel extends JPanel {
      */
     private class DateComboListener implements ItemListener {
 
-        private JComboBox Month;
-        private JComboBox Day;
-        private JComboBox Year;
+        private JComboBox<Integer> Month;
+        private JComboBox<Integer> Day;
+        private JComboBox<Integer> Year;
 
         /**
          * Constructor, input the three params of three JComboBox.
@@ -179,7 +179,7 @@ public class CenterPanel extends JPanel {
          * @param Day JComboBox with 31 days
          * @param Year JComboBox with some years
          */
-        public DateComboListener(JComboBox Month, JComboBox Day, JComboBox Year) {
+        public DateComboListener(JComboBox<Integer> Month, JComboBox<Integer> Day, JComboBox<Integer> Year) {
 
             this.Month = Month;
             this.Day = Day;
@@ -193,35 +193,32 @@ public class CenterPanel extends JPanel {
          */
         @Override
         public void itemStateChanged(ItemEvent e) {
-            int month = Integer.valueOf(Month.getSelectedItem().toString());
-            int year = Integer.valueOf(Year.getSelectedItem().toString());
-            if (e.getSource()==Month && (month == 4 || month==6 || month==9 || month==11)){
-                Day.removeAllItems();
+            int month = (int) Month.getSelectedItem();
+            int year = (int) Year.getSelectedItem();
+            if (e.getSource()==Month && (month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)){
+                //31 days
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(29) == -1){Day.addItem(29);}
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(30) == -1){Day.addItem(30);}
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(31) == -1){Day.addItem(31);}
+            }
+            else if (e.getSource()==Month && (month == 4 || month==6 || month==9 || month==11)){
                 //30 days
-                for (int i = 0; i < 30; i++) {
-                    Day.addItem(i + 1);
-                }
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(29) == -1){Day.addItem(29);}
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(30) == -1){Day.addItem(30);}
+                if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(31) != -1){Day.removeItem(31);}
             }
-            else if (e.getSource()==Month && (month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)){
-                Day.removeAllItems();
-                //31days
-                for (int i = 0; i < 31; i++) {
-                    Day.addItem(i + 1);
-                }
-            }
-            else if (month == 2){
-                Day.removeAllItems();
+            else if ((e.getSource()==Month || e.getSource()==Year) && month == 2){
                 if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)){
-                    //29 days
-                    for (int i = 0; i < 29; i++){
-                        Day.addItem(i + 1);
-                    }
+                    //29 days, leap year
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(29) == -1){Day.addItem(29);}
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(30) != -1){Day.removeItem(30);}
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(31) != -1){Day.removeItem(31);}
                 }
                 else{
-                    //28 days
-                    for (int i = 0; i < 28; i++){
-                        Day.addItem(i + 1);
-                    }
+                    //28 days, not leap year
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(29) != -1){Day.removeItem(29);}
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(30) != -1){Day.removeItem(30);}
+                    if (((DefaultComboBoxModel)Day.getModel()).getIndexOf(31) != -1){Day.removeItem(31);}
                 }
             }
         }
@@ -273,18 +270,15 @@ public class CenterPanel extends JPanel {
         DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
         DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
         StartMonthCombo.addItemListener(dateComboListener1);
+        StartDayCombo.addItemListener(dateComboListener1);
         StartYearCombo.addItemListener(dateComboListener1);
         EndMonthCombo.addItemListener(dateComboListener2);
+        EndDayCombo.addItemListener(dateComboListener2);
         EndYearCombo.addItemListener(dateComboListener2);
 
         //Add StockCombo, add 3 ticker symbols for example.
-        StockCombo = new JComboBox();
+        StockCombo = new JComboBox<>(new String[] {"AAPL","FB","GOOG"});
         StockCombo.setForeground(Color.BLACK);
-        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
-        defaultComboBoxModel.addElement("AAPL");
-        defaultComboBoxModel.addElement("FB");
-        defaultComboBoxModel.addElement("GOOG");
-        StockCombo.setModel(defaultComboBoxModel);
         gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 12 ,0, 8);//anchor: WEST, fill: HORIZONTAL
         this.add(StockCombo, gbc);
 

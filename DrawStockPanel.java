@@ -30,13 +30,13 @@ import java.util.Iterator;
  */
 public class DrawStockPanel extends JPanel implements MouseMotionListener, MouseListener {
 
-    private Color graphColor = new Color(38, 41, 43, 255);
-    private Color pointColor = new Color(186, 186, 186, 180);
-    private Color gridColor = new Color(136, 138, 141, 200);
-    private Color lineColor = new Color(186, 186, 186, 120);
-    private Stroke GRAPH_STROKE = new BasicStroke(2f);
-    private int pad = 25;
-    private int labelPad = 20;
+    private static Color graphColor = new Color(38, 41, 43, 255);
+    private static Color pointColor = new Color(186, 186, 186, 180);
+    private static Color gridColor = new Color(136, 138, 141, 200);
+    private static Color lineColor = new Color(186, 186, 186, 120);
+    private static Stroke GRAPH_STROKE = new BasicStroke(2f);
+    private static int pad = 25;
+    private static int labelPad = 20;
     private int i ;
     private Double min;
     private Double max;

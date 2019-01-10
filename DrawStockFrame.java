@@ -17,7 +17,6 @@ public class DrawStockFrame extends JFrame implements ActionListener {
     private StockData stockData;
     private String dateOnTitle;
 
-
     /**
      * This method creates JRadioButton and add ActionListener to it.
      * @param p JPanel that this button will add to
