@@ -251,7 +251,7 @@ public class CenterPanel extends JPanel {
         this.add(StartDayCombo, gbc);
         //Add StartYearCombo
         StartYearCombo = setDateCombo("year");
-        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 0); //anchor: WEST, fill: BOTH
         this.add(StartYearCombo, gbc);
         //Add EndMonthCombo
         EndMonthCombo = setDateCombo("month");
@@ -263,7 +263,7 @@ public class CenterPanel extends JPanel {
         this.add(EndDayCombo, gbc);
         //Add EndYearCombo
         EndYearCombo = setDateCombo("year");
-        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 2); //anchor: WEST, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 0); //anchor: WEST, fill: BOTH
         this.add(EndYearCombo, gbc);
 
         //to control the Day items, initialise the three combo boxes, and add ItemListeners to Month and Year.
@@ -316,7 +316,7 @@ public class CenterPanel extends JPanel {
         }
         GoButton.setForeground(Color.black);
         GoButton.setText("Go!");
-        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 1, 10,10,0,15);//anchor: West, fill: BOTH
+        gbc = StaticMethods.setGbc(gbc,3, 3, 17, 1, 10,10,0,0);//anchor: West, fill: BOTH
         this.add(GoButton, gbc);
         GoButton.addActionListener(new GoButtonActionListener());//Add ActionListener
     }

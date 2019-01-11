@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * User could open 3 new drawStockFrame windows at most.
  * In drawStockFrame, a graph of the stock Close data will be showed.
  * And user can select which data would be display by clicking the JButtons on the right.
+ * This GUI uses NimbusLookAndFeel if it's available on user's computer,
+ * which is supported by javax.swing.plaf.nimbus.NimbusLookAndFeel.
  * @author Sheng Liang
  * */
 public class MarketGUI extends JFrame {
@@ -119,7 +121,15 @@ public class MarketGUI extends JFrame {
         centerPanel.setPreferredSize(new Dimension(800, 220));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        //Use UIManager to set LookAndFeel to NimbusLookAndFeel.
+        UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+        for(UIManager.LookAndFeelInfo theme:lookAndFeels){
+           if (theme.toString().equals("javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel]")){
+               UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+               break;
+           }
+        }
         MarketGUI frame = new MarketGUI();
         frame.pack();
         frame.setVisible(true);
