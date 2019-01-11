@@ -223,6 +223,7 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
         nearestY = new Point(pad + labelPad, nearestP.y);
         this.repaint();
     }
+
     /**
      * Implements the MouseListener.
      * Apply repaint method to redraw the graph when user'mouse exit.
@@ -241,8 +242,6 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
         invalidate();
         this.repaint();
     }
-
-
 
     /**
      * Main method for testing

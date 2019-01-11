@@ -97,7 +97,9 @@ public class CenterPanel extends JPanel {
     }
 
     /**
-     * This class creates ActionListener for GoButton, to check whether the dates are legal, and change ErrorStatus.
+     * This class adds ActionListener for GoButton,
+     * to check whether the selected date is legal and corresponding data is available,
+     * and then changes the ErrorStatus.
      * */
     private class GoButtonActionListener implements ActionListener {
         @Override

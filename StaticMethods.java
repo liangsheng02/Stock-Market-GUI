@@ -30,8 +30,7 @@ public class StaticMethods {
         }
         return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
-
-
+    
     /**
      * This method is used to set a basic GridBagConstraints more easily.
      * @param x the gridx in GridBagConstraints

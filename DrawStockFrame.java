@@ -143,6 +143,4 @@ public class DrawStockFrame extends JFrame implements ActionListener {
         frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frm.setVisible(true);
     }
-
-
 }

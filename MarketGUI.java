@@ -122,7 +122,7 @@ public class MarketGUI extends JFrame {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
-        //Use UIManager to set LookAndFeel to NimbusLookAndFeel.
+        //Use UIManager to set LookAndFeel to NimbusLookAndFeel, if it's available on users' computer.
         UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
         for(UIManager.LookAndFeelInfo theme:lookAndFeels){
            if (theme.toString().equals("javax.swing.UIManager$LookAndFeelInfo[Nimbus javax.swing.plaf.nimbus.NimbusLookAndFeel]")){
@@ -130,6 +130,7 @@ public class MarketGUI extends JFrame {
                break;
            }
         }
+        //Start!
         MarketGUI frame = new MarketGUI();
         frame.pack();
         frame.setVisible(true);

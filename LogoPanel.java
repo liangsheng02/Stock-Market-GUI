@@ -71,4 +71,3 @@ public class LogoPanel extends JPanel {
         frame.setVisible(true);
     }
 }
-

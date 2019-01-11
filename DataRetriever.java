@@ -90,5 +90,4 @@ public class DataRetriever {
         StockData Stock = dr.getStockData();
         System.out.println(Stock.getCloseList());
     }
-
 }
