@@ -19,21 +19,21 @@ import java.util.Date;
  */
 public class CenterPanel extends JPanel {
 
-    private JComboBox<Integer> StartMonthCombo;
-    private JComboBox<Integer> StartDayCombo;
-    private JComboBox<Integer> StartYearCombo;
-    private JComboBox<Integer> EndMonthCombo;
-    private JComboBox<Integer> EndDayCombo;
-    private JComboBox<Integer> EndYearCombo;
-    private JComboBox<String> StockCombo;
+    private JComboBox<Integer> startMonthCombo;
+    private JComboBox<Integer> startDayCombo;
+    private JComboBox<Integer> startYearCombo;
+    private JComboBox<Integer> endMonthCombo;
+    private JComboBox<Integer> endDayCombo;
+    private JComboBox<Integer> endYearCombo;
+    private JComboBox<String> stockCombo;
     private JButton GoButton;
-    private int ErrorStatus;
+    private int errorStatus;
     private StockData stockData;
     private MarketGUI gui;
 
     /**
      * This method initialises the ComboBoxes with month, year and day.
-     * @param type String, between "month", "day" and "year".
+     * @param type String, among "month", "day" and "year".
      */
     private JComboBox<Integer> setDateCombo(String type) {
         JComboBox<Integer> comboBox = new JComboBox<>();
@@ -106,13 +106,13 @@ public class CenterPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == GoButton) {
-                Object objStock = StockCombo.getSelectedItem();
-                Object objSM = StartMonthCombo.getSelectedItem();
-                Object objSY = StartYearCombo.getSelectedItem();
-                Object objSD = StartDayCombo.getSelectedItem();
-                Object objEM = EndMonthCombo.getSelectedItem();
-                Object objEY = EndYearCombo.getSelectedItem();
-                Object objED = EndDayCombo.getSelectedItem();
+                Object objStock = stockCombo.getSelectedItem();
+                Object objSM = startMonthCombo.getSelectedItem();
+                Object objSY = startYearCombo.getSelectedItem();
+                Object objSD = startDayCombo.getSelectedItem();
+                Object objEM = endMonthCombo.getSelectedItem();
+                Object objEY = endYearCombo.getSelectedItem();
+                Object objED = endDayCombo.getSelectedItem();
                 if (gui.getStockLog().size() < 3){
                     if (objStock != null && objSM != null && objSY != null && objSD != null
                             && objEM != null && objEY != null && objED != null) {//if all ComboBoxes not empty
@@ -126,38 +126,38 @@ public class CenterPanel extends JPanel {
                             choEndDate = new SimpleDateFormat("MM/dd/yyyy").format(end);
                             Date today = new Date();
                             if (end.after(today)){//Error3 "End Date Error: Later Than Today."
-                                ErrorStatus = 3;
+                                errorStatus = 3;
                             }else if (!start.before(end)){//Error4 "Start Date Error: Not Before End Date."
-                                ErrorStatus = 4;
+                                errorStatus = 4;
                             }else {//get stock data
                                 DataRetriever dr = new DataRetriever(choStock, choStartDate, choEndDate);
                                 stockData = dr.getStockData();
                                 if (stockData.getCloseList().size() == 0){//Error5 "Don't Have Any Data."
-                                    ErrorStatus = 5;
+                                    errorStatus = 5;
                                 }else if (stockData.getCloseList().size() == 1){//Error6 "Only Have One Data Point, Not Enough For A Graph."
-                                    ErrorStatus = 6;
+                                    errorStatus = 6;
                                 }
                                 else if (gui.getStockLog().contains(stockData.getTicker_symbol()
                                         + " from " + stockData.getDateList().get(0)
                                         + " to " + stockData.getDateList().get(stockData.getDateList().size()-1))){
                                     //Error7 "You Have Gotten The Same Data."
-                                    ErrorStatus = 7;
+                                    errorStatus = 7;
                                 }
                                 else{//OK!
-                                    ErrorStatus = 0;
+                                    errorStatus = 0;
                                 }
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace(System.err);
                         }
                     }else {//Error2 "Please Select Stock, Start Date and End Date."
-                        ErrorStatus = 2;
+                        errorStatus = 2;
                     }
                 }else{//Error1 "Opened Too Many Windows."
-                    ErrorStatus = 1;
+                    errorStatus = 1;
                 }
                 //execute getMessage method in gui to display corresponding message.
-                gui.getMessage(ErrorStatus);
+                gui.getMessage(errorStatus);
             }
         }
     }
@@ -242,47 +242,47 @@ public class CenterPanel extends JPanel {
         GridBagConstraints gbc;
 
         //Add StartMonthCombo
-        StartMonthCombo = setDateCombo("month");
+        startMonthCombo = setDateCombo("month");
         gbc = StaticMethods.setGbc(null,1, 1, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
         gbc.ipadx = 20;
-        this.add(StartMonthCombo, gbc);
+        this.add(startMonthCombo, gbc);
         //Add StartDayCombo
-        StartDayCombo = setDateCombo("day");
+        startDayCombo = setDateCombo("day");
         gbc = StaticMethods.setGbc(gbc,2, 1, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
         gbc.ipadx = 0;
-        this.add(StartDayCombo, gbc);
+        this.add(startDayCombo, gbc);
         //Add StartYearCombo
-        StartYearCombo = setDateCombo("year");
+        startYearCombo = setDateCombo("year");
         gbc = StaticMethods.setGbc(gbc,3, 1, 17, 1, 5, 10 ,5, 0); //anchor: WEST, fill: BOTH
-        this.add(StartYearCombo, gbc);
+        this.add(startYearCombo, gbc);
         //Add EndMonthCombo
-        EndMonthCombo = setDateCombo("month");
+        endMonthCombo = setDateCombo("month");
         gbc = StaticMethods.setGbc(gbc,1, 2, 17, 1, 5, 10 ,5, 5); //anchor: WEST, fill: BOTH
-        this.add(EndMonthCombo, gbc);
+        this.add(endMonthCombo, gbc);
         //Add EndDayCombo
-        EndDayCombo = setDateCombo("day");
+        endDayCombo = setDateCombo("day");
         gbc = StaticMethods.setGbc(gbc,2, 2, 17, 1, 5, 12 ,5, 8); //anchor: WEST, fill: BOTH
-        this.add(EndDayCombo, gbc);
+        this.add(endDayCombo, gbc);
         //Add EndYearCombo
-        EndYearCombo = setDateCombo("year");
+        endYearCombo = setDateCombo("year");
         gbc = StaticMethods.setGbc(gbc,3, 2, 17, 1, 5, 10 ,5, 0); //anchor: WEST, fill: BOTH
-        this.add(EndYearCombo, gbc);
+        this.add(endYearCombo, gbc);
 
         //to control the Day items, initialise the three combo boxes, and add ItemListeners to Month and Year.
-        DateComboListener dateComboListener1 = new DateComboListener(StartMonthCombo, StartDayCombo, StartYearCombo);
-        DateComboListener dateComboListener2 = new DateComboListener(EndMonthCombo, EndDayCombo, EndYearCombo);
-        StartMonthCombo.addItemListener(dateComboListener1);
-        StartDayCombo.addItemListener(dateComboListener1);
-        StartYearCombo.addItemListener(dateComboListener1);
-        EndMonthCombo.addItemListener(dateComboListener2);
-        EndDayCombo.addItemListener(dateComboListener2);
-        EndYearCombo.addItemListener(dateComboListener2);
+        DateComboListener dateComboListener1 = new DateComboListener(startMonthCombo, startDayCombo, startYearCombo);
+        DateComboListener dateComboListener2 = new DateComboListener(endMonthCombo, endDayCombo, endYearCombo);
+        startMonthCombo.addItemListener(dateComboListener1);
+        startDayCombo.addItemListener(dateComboListener1);
+        startYearCombo.addItemListener(dateComboListener1);
+        endMonthCombo.addItemListener(dateComboListener2);
+        endDayCombo.addItemListener(dateComboListener2);
+        endYearCombo.addItemListener(dateComboListener2);
 
         //Add StockCombo, add 3 ticker symbols for example.
-        StockCombo = new JComboBox<>(new String[] {"AAPL","FB","GOOG"});
-        StockCombo.setForeground(Color.BLACK);
+        stockCombo = new JComboBox<>(new String[] {"AAPL","FB","GOOG"});
+        stockCombo.setForeground(Color.BLACK);
         gbc = StaticMethods.setGbc(gbc,2, 3, 17, 2, 10, 12 ,0, 8);//anchor: WEST, fill: HORIZONTAL
-        this.add(StockCombo, gbc);
+        this.add(stockCombo, gbc);
 
         //Add label "Start Date :"
         JLabel label1 = setLabel("Start Date :",-1);

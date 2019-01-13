@@ -34,7 +34,7 @@ public class StaticMethods {
     /**
      * This method is used to set a basic GridBagConstraints more easily.
      * @param x the gridx in GridBagConstraints
-     * @param y thegridy in GridBagConstraints
+     * @param y the gridy in GridBagConstraints
      * @param anchor the anchor in GridBagConstraints
      * @param fill the fill in GridBagConstraints
      * @param top the param 'top' of  Insets object

@@ -34,7 +34,7 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
     private static Color pointColor = new Color(186, 186, 186, 180);
     private static Color gridColor = new Color(136, 138, 141, 200);
     private static Color lineColor = new Color(186, 186, 186, 120);
-    private static Stroke GRAPH_STROKE = new BasicStroke(2f);
+    private static Stroke graphStroke = new BasicStroke(2f);
     private static int pad = 25;
     private static int labelPad = 20;
     private int i ;
@@ -159,7 +159,7 @@ public class DrawStockPanel extends JPanel implements MouseMotionListener, Mouse
 
         //draw lines graph and bars
         Stroke oldStroke = g2.getStroke();
-        g2.setStroke(GRAPH_STROKE);
+        g2.setStroke(graphStroke);
         i = 0;
         while (i < graphPoints.size() - 1) {
             //draw lines!
